@@ -1,0 +1,3383 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FDSNStationXML xmlns="http://www.fdsn.org/xml/station/1" schemaVersion="1.1">
+  <Source>ObsPy 1.2.2</Source>
+  <Module>ObsPy 1.2.2</Module>
+  <ModuleURI>https://www.obspy.org</ModuleURI>
+  <Created>2021-01-12T23:10:34.876447Z</Created>
+  <Network code="XP" startDate="2020-04-13T17:13:06.000000Z" endDate="2020-06-12T19:57:41.000000Z">
+    <Station code="PARK" startDate="2020-04-13T17:13:06.000000Z" endDate="2020-06-12T19:57:41.000000Z">
+      <Latitude unit="DEGREES">44.274849123023664</Latitude>
+      <Longitude unit="DEGREES">-115.0189871424774</Longitude>
+      <Elevation unit="METERS">1987.0</Elevation>
+      <Site>
+        <Name>PARK</Name>
+      </Site>
+      <Channel code="HDF" startDate="2020-04-13T20:33:53.000000Z" endDate="2020-06-12T19:32:28.000000Z" locationCode="01">
+        <Latitude unit="DEGREES">44.27524831992413</Latitude>
+        <Longitude unit="DEGREES">-115.01984928588541</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>109</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>109</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T20:42:53.000000Z" endDate="2020-06-01T15:31:56.000000Z" locationCode="02">
+        <Latitude unit="DEGREES">44.27497625906313</Latitude>
+        <Longitude unit="DEGREES">-115.01998501348643</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>096</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>096</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T21:19:15.000000Z" endDate="2020-06-12T19:49:42.000000Z" locationCode="03">
+        <Latitude unit="DEGREES">44.27468236583042</Latitude>
+        <Longitude unit="DEGREES">-115.01976319962687</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>108</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>108</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T21:02:44.000000Z" endDate="2020-05-31T02:53:10.000000Z" locationCode="04">
+        <Latitude unit="DEGREES">44.274375127409755</Latitude>
+        <Longitude unit="DEGREES">-115.01948704418555</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>080</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>080</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T20:45:23.000000Z" endDate="2020-05-26T14:37:52.000000Z" locationCode="05">
+        <Latitude unit="DEGREES">44.27532502659007</Latitude>
+        <Longitude unit="DEGREES">-115.01951079195617</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>106</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>106</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T20:45:35.000000Z" endDate="2020-05-23T20:33:34.000000Z" locationCode="06">
+        <Latitude unit="DEGREES">44.27503049489153</Latitude>
+        <Longitude unit="DEGREES">-115.01954203479275</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>084</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>084</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T20:56:51.000000Z" endDate="2020-06-12T19:57:41.000000Z" locationCode="07">
+        <Latitude unit="DEGREES">44.27479579242229</Latitude>
+        <Longitude unit="DEGREES">-115.01940419075802</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>049</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>049</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T20:16:16.000000Z" endDate="2020-06-12T19:50:46.000000Z" locationCode="08">
+        <Latitude unit="DEGREES">44.27452702512126</Latitude>
+        <Longitude unit="DEGREES">-115.01919582889602</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>102</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>102</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T18:58:35.000000Z" endDate="2020-05-23T20:42:30.000000Z" locationCode="09">
+        <Latitude unit="DEGREES">44.275169831391494</Latitude>
+        <Longitude unit="DEGREES">-115.01916739820565</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>094</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>094</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T20:29:25.000000Z" endDate="2020-05-23T20:51:47.000000Z" locationCode="10">
+        <Latitude unit="DEGREES">44.27496471432749</Latitude>
+        <Longitude unit="DEGREES">-115.01907849024549</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>105</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>105</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T20:29:10.000000Z" endDate="2020-04-24T23:54:52.000000Z" locationCode="11">
+        <Latitude unit="DEGREES">44.27470887099866</Latitude>
+        <Longitude unit="DEGREES">-115.01895945945945</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>098</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>098</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T20:19:18.000000Z" endDate="2020-06-12T19:54:58.000000Z" locationCode="12">
+        <Latitude unit="DEGREES">44.2744506651872</Latitude>
+        <Longitude unit="DEGREES">-115.01885061154918</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>056</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>056</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T19:10:03.000000Z" endDate="2020-06-12T19:33:53.000000Z" locationCode="13">
+        <Latitude unit="DEGREES">44.275299290031484</Latitude>
+        <Longitude unit="DEGREES">-115.0189056578615</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>055</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>055</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T18:46:04.000000Z" endDate="2020-05-23T20:46:29.000000Z" locationCode="14">
+        <Latitude unit="DEGREES">44.27501361527669</Latitude>
+        <Longitude unit="DEGREES">-115.0188884253395</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>100</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>100</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T18:34:55.000000Z" endDate="2020-05-23T20:53:06.000000Z" locationCode="15">
+        <Latitude unit="DEGREES">44.27476112969787</Latitude>
+        <Longitude unit="DEGREES">-115.0186643626903</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>097</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>097</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T18:22:04.000000Z" endDate="2020-05-23T21:01:34.000000Z" locationCode="16">
+        <Latitude unit="DEGREES">44.274451197880396</Latitude>
+        <Longitude unit="DEGREES">-115.01847929009438</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>085</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>085</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T17:40:33.000000Z" endDate="2020-06-12T19:22:48.000000Z" locationCode="17">
+        <Latitude unit="DEGREES">44.275241962349995</Latitude>
+        <Longitude unit="DEGREES">-115.01866096862197</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>091</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>091</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T17:31:58.000000Z" endDate="2020-06-12T15:12:15.000000Z" locationCode="18">
+        <Latitude unit="DEGREES">44.274947549482604</Latitude>
+        <Longitude unit="DEGREES">-115.01842370005413</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>095</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>095</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T17:25:04.000000Z" endDate="2020-06-12T19:19:18.000000Z" locationCode="19">
+        <Latitude unit="DEGREES">44.27478291439597</Latitude>
+        <Longitude unit="DEGREES">-115.01820929075132</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>077</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>077</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T17:13:06.000000Z" endDate="2020-05-27T14:34:47.000000Z" locationCode="20">
+        <Latitude unit="DEGREES">44.27469965618448</Latitude>
+        <Longitude unit="DEGREES">-115.0181033397065</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>103</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>103</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T18:09:12.000000Z" endDate="2020-06-05T13:22:04.000000Z" locationCode="21">
+        <Latitude unit="DEGREES">44.27471733634013</Latitude>
+        <Longitude unit="DEGREES">-115.01831187283427</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>088</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>088</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+      <Channel code="HDF" startDate="2020-04-13T17:58:27.000000Z" endDate="2020-06-12T19:17:52.000000Z" locationCode="22">
+        <Latitude unit="DEGREES">44.274511561723614</Latitude>
+        <Longitude unit="DEGREES">-115.01827687750226</Longitude>
+        <Elevation unit="METERS">1987.0</Elevation>
+        <Depth unit="METERS">0.0</Depth>
+        <Azimuth unit="DEGREES">0.0</Azimuth>
+        <Dip unit="DEGREES">0.0</Dip>
+        <Type>GEOPHYSICAL</Type>
+        <SampleRate>100.0</SampleRate>
+        <ClockDrift unit="SECONDS/SAMPLE">0.0</ClockDrift>
+        <Sensor>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>090</SerialNumber>
+        </Sensor>
+        <Equipment>
+          <Description>Gem 1.0 (Infrasound), 0.039-27.1 Hz, 0.0035012 Pa/count</Description>
+          <Model>Gem Infrasound Logger v1.0</Model>
+          <SerialNumber>090</SerialNumber>
+        </Equipment>
+        <Response>
+          <InstrumentSensitivity>
+            <Value>128000.0</Value>
+            <Frequency>0.05</Frequency>
+            <InputUnits>
+              <Name>PA</Name>
+              <Description>None</Description>
+            </InputUnits>
+            <OutputUnits>
+              <Name>COUNTS</Name>
+              <Description>Digital Counts</Description>
+            </OutputUnits>
+          </InstrumentSensitivity>
+          <Stage number="1">
+            <PolesZeros>
+              <InputUnits>
+                <Name>PA</Name>
+              </InputUnits>
+              <OutputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </OutputUnits>
+              <PzTransferFunctionType>LAPLACE (RADIANS/SECOND)</PzTransferFunctionType>
+              <NormalizationFactor>850946600.0</NormalizationFactor>
+              <NormalizationFrequency unit="HERTZ">1.0</NormalizationFrequency>
+              <Zero number="0">
+                <Real minusError="0.0" plusError="0.0">0.0</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Zero>
+              <Pole number="0">
+                <Real minusError="-0.244" plusError="-0.244">-0.244</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="1">
+                <Real minusError="-622.1227" plusError="-622.1227">-622.1227</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="2">
+                <Real minusError="-853.2195" plusError="-853.2195">-853.2195</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+              <Pole number="3">
+                <Real minusError="-1601.773" plusError="-1601.773">-1601.773</Real>
+                <Imaginary minusError="0.0" plusError="0.0">0.0</Imaginary>
+              </Pole>
+            </PolesZeros>
+            <StageGain>
+              <Value>0.002231378</Value>
+              <Frequency>1.0</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="2">
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="3">
+            <Coefficients>
+              <InputUnits>
+                <Name>V</Name>
+                <Description>Volts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>1.0</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>1</Factor>
+              <Offset>0</Offset>
+              <Delay>0.0</Delay>
+              <Correction>0.0</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>128000.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+          <Stage number="4">
+            <Coefficients>
+              <InputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </InputUnits>
+              <OutputUnits>
+                <Name>COUNTS</Name>
+                <Description>Digital Counts</Description>
+              </OutputUnits>
+              <CfTransferFunctionType>DIGITAL</CfTransferFunctionType>
+              <Numerator>0.0006528494</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1742247</Numerator>
+              <Numerator>0.1629844</Numerator>
+              <Numerator>0.1324792</Numerator>
+              <Numerator>0.09111944</Numerator>
+              <Numerator>0.04935263</Numerator>
+              <Numerator>0.01598506</Numerator>
+              <Numerator>-0.004461664</Numerator>
+              <Numerator>-0.01237633</Numerator>
+              <Numerator>-0.01167885</Numerator>
+              <Numerator>-0.007351999</Numerator>
+              <Numerator>-0.003173635</Numerator>
+              <Numerator>-0.0006434414</Numerator>
+              <Numerator>0.0006528494</Numerator>
+            </Coefficients>
+            <Decimation>
+              <InputSampleRate unit="HERTZ">400.0</InputSampleRate>
+              <Factor>4</Factor>
+              <Offset>0</Offset>
+              <Delay>0.03</Delay>
+              <Correction>0.03</Correction>
+            </Decimation>
+            <StageGain>
+              <Value>1.0</Value>
+              <Frequency>0.05</Frequency>
+            </StageGain>
+          </Stage>
+        </Response>
+      </Channel>
+    </Station>
+  </Network>
+</FDSNStationXML>
