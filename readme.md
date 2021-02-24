@@ -1,3 +1,6 @@
+# "Clean" Beamforming
+Clean is a method to iteratively deconvolve an array's response from the array's cross-spectrum, resulting in an output frequency-slowness spectrum that consists of a small number of spikes in slowness space. The beamforming code in this package was written following [den Ouden et al. (2020)](https://academic.oup.com/gji/article/221/1/305/5698307?casa_token=njSpOoXp9ekAAAAA:Cl9dOheqodGD02UsipR9peku690_jNEwcikjjkpHgxF3mjW-51NUwoFj3xIuQk6UPtfZN1tUYWfo) who used it for infrasound analysis; however, the Clean beamforming method has been in use for decades.
+
 ### Installation
 Dependencies include pandas and obspy (essential) and mtspec (optional; supports multitaper spectra). You can make a conda environment with these dependencies using this command:
 conda create -y -n clean_beamform python=3.8 pandas obspy mtspec
