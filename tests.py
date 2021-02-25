@@ -5,12 +5,13 @@ from numpy import pi, sqrt, sin, cos, exp
 import obspy
 import importlib
 import mtspec
+import clean
 
 try:
     importlib.reload(clean)
     print('reloaded')
 except:
-    import clean
+    pass
 
 def approx_equal(x, y, p = 0.01):
     return np.abs(x-y)/x < p
@@ -103,7 +104,7 @@ assert clean.check_output_power(result), 'Power conservation, correlated wavefie
 ## The sum of clean power and remaining power (noise) should always equal the original power. This 
 ## test includes both correlated signal and noise, so the clean spectrum will not be equal in power
 ## to the input, but the clean + remaining power will be.
-stream = clean.make_synth_stream(Nt = 800, sx = [1, -2], sy = [2, 0], amp = [1,1]
+stream = clean.make_synth_stream(Nt = 800, sx = [1, -2], sy = [2, 0], amp = [1,1],
                                         Nx = 3, Ny = 1, fc = [6, 6], uncorrelatedNoiseAmp = 2) 
 result = clean.clean(stream, phi = 0.2, win_length_sec = 1)
 print('Power conservation ratio:')

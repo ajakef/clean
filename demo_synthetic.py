@@ -1,11 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import obspy, scipy, importlib
+import clean
 try:
     importlib.reload(clean)
     print('reloaded')
 except:
-    import clean
+    pass
     
 #%% Pure noise, no correlated signal
 ## In this case, we just plot the f-sx spectra (clean and original). 

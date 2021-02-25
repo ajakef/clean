@@ -8,9 +8,7 @@ import warnings
 import numpy as np
 import scipy.signal
 import matplotlib.pyplot as plt
-#from scipy.integrate import cumtrapz
 import obspy
-#from obspy.core import Stream
 from obspy.signal.headers import clibsignal
 from obspy.signal.invsim import cosine_taper
 from obspy.signal.util import next_pow_2, util_geo_km
