@@ -15,6 +15,7 @@ except:
 stream = clean.make_synth_stream(sx = [0], sy = [0], amp = [0], uncorrelatedNoiseAmp=10) # x,y are built into stream
 plt.plot(np.abs(np.fft.fft(stream[0].data)))
 result = clean.clean(stream, verbose = True, phi=0.1, syList = [0], separateFreqs = 0, p_value = 0.01)
+plt.figure(1)
 plt.subplot(1,2,1)
 clean.plot_freq_slow_spec(result, 'fx')#, fRange = [0,10])
 plt.subplot(1,2,2)
@@ -25,6 +26,7 @@ plt.tight_layout()
 ## The clean spectrum is highly concentrated at sx=0, as expected. 
 ## With only one wave and zero noise, nearly all the power is recovered in the clean spectrum.
 stream = clean.make_synth_stream() # x,y are built into stream
+plt.figure(2)
 plt.plot(np.abs(np.fft.fft(stream[0].data)))
 result = clean.clean(stream, verbose = True, phi=0.2, win_length_sec=2)
 plt.subplot(1,2,1)
@@ -54,6 +56,7 @@ result = clean.clean(stream, verbose = True, phi = 0.5, separateFreqs = 0, win_l
                               sxList = s_list, syList = s_list)
                               
 imageAdj = lambda x:x * (x>(x.max()*0.01))
+plt.figure(3)
 plt.subplot(2,2,1)
 clean.plot_freq_slow_spec(result, 'xy')#, imageAdj = imageAdj)
 plt.subplot(2,2,2)
@@ -82,6 +85,7 @@ result = clean.clean(stream, verbose = True, phi = 0.1, separateFreqs = 0, win_l
 
 #imageAdj = lambda x: np.log(x + x.max()*1e-3)
 imageAdj = lambda x:x * (x>(x.max()*0.01))
+plt.figure(4)
 plt.subplot(2,2,1)
 clean.plot_freq_slow_spec(result, 'xy', imageAdj = imageAdj)
 plt.subplot(2,2,2)
@@ -105,7 +109,7 @@ stream = clean.make_synth_stream(Nt = Nt, sx = [1, -2], sy = [1, 2], amp = [1,1]
 result = clean.clean(stream, verbose = True, phi = 0.1, separateFreqs = 0, win_length_sec = win_length_sec, 
                               p_value=0.1, freq_bin_width = freq_bin_width, show_plots = False,
                               sxList = s_list, syList = s_list)
-
+plt.figure(5)
 plt.subplot(2,2,1)
 clean.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,2)
@@ -131,7 +135,8 @@ stream = clean.make_synth_stream(Nt = Nt, sx = sx, amp = sx*0+1, sy = 0*sx, Nx =
 result = clean.clean(stream, verbose = True, phi = 0.1, separateFreqs = 0, win_length_sec = win_length_sec, 
                               p_value=0.0001, freq_bin_width = freq_bin_width, show_plots = False,
                               sxList = s_list, syList = s_list)
-                              
+            
+plt.figure(6)                  
 plt.subplot(2,2,1)
 clean.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,2)
