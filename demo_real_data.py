@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import obspy, scipy
+import clean
 try:
     import importlib
     importlib.reload(clean)
     print('reloaded')
 except:
-    import clean
+    pass
 
 #%%
 ## Load an earthquake recording. This includes preliminary background noise,
