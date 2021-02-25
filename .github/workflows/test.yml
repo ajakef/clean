@@ -32,7 +32,10 @@ jobs:
         # make local dir installable.  Would be better to get it to import from
         # system path...
         #python setup.py build_ext --inplace
-        pip install pytest, obspy, pandas, mtspec
+        pip install pytest
+	pip install obspy
+	pip install pandas
+	pip install mtspec
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with pytest
       run: |
