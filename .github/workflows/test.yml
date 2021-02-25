@@ -33,9 +33,9 @@ jobs:
         # system path...
         #python setup.py build_ext --inplace
         pip install pytest
-	pip install obspy
-	pip install pandas
-	pip install mtspec
+        pip install obspy
+        pip install pandas
+        pip install mtspec
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with pytest
       run: |
