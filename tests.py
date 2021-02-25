@@ -74,7 +74,7 @@ splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs))
 crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, taper = 'multitaper', taper_param=4)
 print(np.sum(crossSpec[0,0,:]) * np.diff(freqs)[0] / np.var(st[0].data))
 splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
-splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs))
+splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs + 1e-12))
 
 
 splt[1].plot([0,50], [0.02,0.02], 'k--')

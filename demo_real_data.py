@@ -104,7 +104,7 @@ s_list = np.arange(-4, 4, 0.25)
 result = clean.clean(st, phi = 0.2, win_length_sec = 180, 
                      freq_bin_width = 1, freq_min = 0, freq_max = 2, 
                      sxList = s_list, syList = s_list, prewhiten = False)
-plt.figure(3)
+plt.figure(4)
 plt.subplot(2,2,1)
 clean.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,2)
