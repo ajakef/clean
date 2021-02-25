@@ -31,7 +31,7 @@ jobs:
         # pytest prefers to import from local dir instead of system PATH, so
         # make local dir installable.  Would be better to get it to import from
         # system path...
-        python setup.py build_ext --inplace
+        #python setup.py build_ext --inplace
         pip install pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with pytest
