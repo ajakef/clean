@@ -54,11 +54,11 @@ stream = clean.make_synth_stream(Nt = win_length_sec * num_windows * 100, sx = [
 result = clean.clean(stream, verbose = True, phi = 0.5, separateFreqs = 0, win_length_sec = win_length_sec, 
                               p_value=0.0001, freq_bin_width = freq_bin_width, show_plots = False,
                               sxList = s_list, syList = s_list)
-                              
-imageAdj = lambda x:x * (x>(x.max()*0.01))
+
+plt.close(3)                              
 plt.figure(3)
 plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy')#, imageAdj = imageAdj)
+clean.plot_freq_slow_spec(result, 'xy')
 plt.subplot(2,2,2)
 clean.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,3)
@@ -84,10 +84,11 @@ result = clean.clean(stream, verbose = True, phi = 0.1, separateFreqs = 0, win_l
                               sxList = s_list, syList = s_list)
 
 #imageAdj = lambda x: np.log(x + x.max()*1e-3)
-imageAdj = lambda x:x * (x>(x.max()*0.01))
+#imageAdj = lambda x:x * (x>(x.max()*0.01))
+plt.close(4)
 plt.figure(4)
 plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy', imageAdj = imageAdj)
+clean.plot_freq_slow_spec(result, 'xy')#, imageAdj = imageAdj)
 plt.subplot(2,2,2)
 clean.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,3)
