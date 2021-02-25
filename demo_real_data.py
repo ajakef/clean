@@ -46,7 +46,6 @@ clean.polar_freq_slow_spec(result, 'fa')
 
 plt.tight_layout()
 
-#nWelch 8 gives best power (0.42)
 #%%
 ## Aftershock secondary infrasound (seismic-to-acoustic conversion away from the array)
 ## Slowness should mostly be that of horizontally-propagating acoustic waves.
@@ -73,9 +72,9 @@ plt.tight_layout()
 
 #%%
 ## Background sounds before aftershock begins
-## The clean spectrum should have little energy and should be concentrated around the 3 s/km circle
+## The clean spectrum should have little energy and should be concentrated around 3 s/km 
 
-st = eq_stream.slice(t1, t_trans-10)
+st = eq_stream.slice(t1+5, t_trans-10)
 
 s_list = np.arange(-4, 4, 0.25)
 result = clean.clean(st, verbose = True, phi = 0.2, separateFreqs = 0,  
