@@ -20,6 +20,8 @@ try:
 except:
     print("Library mtspec is not available, meaning that multitaper spectra are not an option")
 
+eps = 1e-12
+
 def make_steering_vectors(geometry, stream, freqs, xSlowness, ySlowness = 0):
     if isinstance(geometry, list):
         geometry = np.array(geometry).transpose()
@@ -65,17 +67,20 @@ def calc_fourier_window(stream, offset=0, taper = None, taper_param = 4, raw=Fal
         ft /= np.abs(ft) + eps # apply a tiny waterlevel to avoid divide-by-zero
     return ft, freqList
 
-def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False, nWelch = 4, \
-                  freq_bin_width = 1, prewhiten = False):
+def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False, win_length_sec = 1, 
+                        freq_bin_width = 1, prewhiten = False):
     crossSpec = 0
     FT = 0 
     if (taper is not None) and (taper.lower() == 'multitaper'):
-        n_freq = int(2**np.ceil(np.log2(len(stream[0].data)))/2)
+        num_windows = 1
+        #n_freq = int(2**np.ceil(np.log2(len(stream[0].data)))/2)
+        n_freq = int(len(stream[0].data)/2)
         crossSpec = np.zeros([len(stream), len(stream), n_freq], dtype = 'complex')
         for i in range(len(stream)):
             for j in range(i):
-                mt_output = mtspec.mt_coherence(stream[0].stats.delta, stream[i].data, stream[j].data, taper_param,\
-                                                5, n_freq, 0.95, cohe = True, phase = True, \
+                mt_output = mtspec.mt_coherence(stream[0].stats.delta, stream[i].data, 
+                                                stream[j].data, tbp = taper_param, kspec = 5, 
+                                                nf = n_freq, p = 0.95, cohe = True, phase = True, 
                                                 speci = True, specj = True, freq = True)
                 df = np.diff(mt_output['freq'])[0]
                 ## Hack to enforce Parseval's relation. mtspec doesn't do it.
@@ -83,18 +88,24 @@ def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False
                 scale_j = np.var(stream[j])/(np.sum(mt_output['specj']) * df)
                 crossSpec[i,i,:] = mt_output['speci'] * scale_i
                 crossSpec[j,j,:] = mt_output['specj'] * scale_j
-                crossSpec[i,j,:] = (mt_output['speci'] * mt_output['specj'] * scale_i * scale_j * mt_output['cohe'])**0.5 * np.exp(1j * np.pi/180 * mt_output['phase'])
+                crossSpec[i,j,:] = (mt_output['speci'] * mt_output['specj'] * scale_i * scale_j * 
+                                    mt_output['cohe'])**0.5 * np.exp(1j * np.pi/180 * mt_output['phase'])
                 crossSpec[j,i,:] = crossSpec[i,j].conj()
         freqs = mt_output['freq']                
-    else:
-        winLength = len(stream[0].data) // nWelch
-        for i in range(nWelch):
+    else: # use default Tukey taper
+        win_length_samp = int(np.round(win_length_sec / stream[0].stats.delta))
+        data_length_samp = len(stream[0].data)
+        overlap = 0 # for possible future use. calculating degrees of freedom assumes non-overlapping windows.
+        num_windows = int(np.ceil(data_length_samp / (win_length_samp * (1 - overlap))))
+        for i in range(num_windows):
+            win_start = int(np.round(i * (data_length_samp - win_length_samp) / (num_windows-1 + eps)))
             tmpStream = stream.copy()
             for tr in tmpStream:
-                tr.data = tr.data[(i * winLength):((i+1) * winLength)]
+                #tr.data = tr.data[(i * winLength):((i+1) * winLength)]
+                tr.data = tr.data[win_start:(win_start + win_length_samp)]
             tmpFT, freqs = calc_fourier_window(tmpStream, offset, taper, taper_param, raw, prewhiten)
-            crossSpec += np.einsum('ik,jk->ijk', tmpFT, tmpFT.conj())/nWelch # identical to _r from obspy, but reordered indices. i: station, j: station, k: freq
-            FT += np.abs(tmpFT) / nWelch 
+            crossSpec += np.einsum('ik,jk->ijk', tmpFT, tmpFT.conj())/num_windows # identical to _r from obspy, but reordered indices. i: station, j: station, k: freq
+            FT += np.abs(tmpFT) / num_windows 
     ## bin smoothing
     n_bins = len(freqs) // freq_bin_width
     crossSpec_binned = np.zeros((len(stream), len(stream), n_bins), dtype = np.complex128)
@@ -102,10 +113,12 @@ def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False
     for i in range(n_bins):
         crossSpec_binned[:,:,i] += np.mean(crossSpec[:,:,(i*freq_bin_width):((i+1)*freq_bin_width)], axis = 2)
         freqs_binned[i] = np.mean(freqs[(i*freq_bin_width):((i+1)*freq_bin_width)])
-
-    dfn = 2 * (freq_bin_width-1 + nWelch) # so that bin width 1, having no extra freqs, adds no extra df
+    
+    ## calculate degrees of freedom
+    dfn = 2 * (freq_bin_width-1 + num_windows) # so that bin width 1, having no extra freqs, adds no extra df
     dfd = (len(stream)-1) * dfn
     return crossSpec_binned, FT, freqs_binned, dfn, dfd
+
 
 
 ####################################################
@@ -224,7 +237,7 @@ def plot_slowness_spectrum(crossSpec, compToRemove, cleanSpec, originalCrossSpec
 #####################################################
 ## Function to iteratively remove wavefield components from obspy stream
 def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p_value = 0.01, 
-          nWelch = 4, freq_bin_width = 1, freq_min = 0, freq_max = 15, separateFreqs = 0,
+          win_length_sec = 1, freq_bin_width = 1, freq_min = 0, freq_max = 15, separateFreqs = 0,
           rawFT = False, taper = 'Tukey', taper_param = 4, prewhiten = False, 
           show_plots = False, verbose = True):
           
@@ -278,7 +291,7 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
     
     ## calculate the cross-spectrum
     if verbose: print('Calculating cross-spectrum')
-    crossSpec, FT, freqList, dfN, dfD = calc_cross_spectrum(stream, raw = rawFT, nWelch = nWelch,
+    crossSpec, FT, freqList, dfN, dfD = calc_cross_spectrum(stream, raw = rawFT, win_length_sec = win_length_sec,
                                             freq_bin_width = freq_bin_width, prewhiten = prewhiten,
                                             taper = taper, taper_param = taper_param)
     ## drop freqs outside the user-defined range
@@ -354,7 +367,7 @@ def _process_inputs(stream, x = None, y = None, sxList = None, syList = None):
 
     return (staLoc, sxList, syList)
 ###########################################
-def make_synth_stream(Nt = 256, dt = 0.01, x = None, y = None, dx = None, dy = None, Nx = None, 
+def make_synth_stream(Nt = 400, dt = 0.01, x = None, y = None, dx = None, dy = None, Nx = None, 
                     Ny = None, sx = None, sy = None, amp = None, fl = None, fh = None, fc = None, 
                     uncorrelatedNoiseAmp = 0, prewhiten = True):
     r"""
@@ -473,7 +486,7 @@ def _make_default_waves(sx = None, sy = None, amp = None, fl = None, fh = None, 
     sx = _assign_default_none(sx, default = 0)
     sy = _assign_default_none(sy, default = 0)
     amp = _assign_default_none(amp, default = 1)
-    fc = _assign_default_none(fc, default = 2)
+    fc = _assign_default_none(fc, default = 3)
     fl = _assign_default_none(fl, default = fc / 2)
     fh = _assign_default_none(fh, default = fc * 2)
 
@@ -498,11 +511,31 @@ def _make_default_waves(sx = None, sy = None, amp = None, fl = None, fh = None, 
 
 def _circle(r):
     az = np.arange(361) * np.pi/180
-    plt.plot(r * np.cos(az), r * np.sin(az), 'k--')
+    plt.plot(r * np.cos(az), r * np.sin(az), 'k--', linewidth = 0.5)
+
+def _comp_to_label(comp, backazimuth):
+    if comp == 'f':
+        return 'Frequency (Hz)'
+    elif comp == 'x' and backazimuth:
+        return 'x Back Slowness (s/km)'        
+    elif comp == 'x' and not backazimuth:
+        return 'x Forward Slowness (s/km)'
+    elif comp == 'y' and backazimuth:
+        return 'y Back Slowness'
+    elif comp == 'y' and not backazimuth:
+        return 'y Forward Slowness (s/km)'
+    elif comp == 'a' and backazimuth:
+        return 'Backazimuth (degrees)'
+    elif comp == 'a' and not backazimuth:
+        return 'Azimuth (degrees)'
+    elif comp == 'h':
+        return 'Horizontal Slowness (s/km)'
+    else:
+        return None
     
-def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean',
+def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblance = True,
                fRange = [-np.Inf, np.Inf], sxRange = [-np.Inf, np.Inf], 
-               syRange = [-np.Inf, np.Inf], imageAdj = None, backAzimuth = True):
+               syRange = [-np.Inf, np.Inf], imageAdj = None, backazimuth = True):
     """
     Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
     
@@ -517,21 +550,23 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean',
     sxRange: lower and upper limits for x slowness axis
     syRange: lower and upper limits for y slowness axis
     imageAdj: optional function to change scaling of power
-    backAzimuth: if True, flip the sx and sy axes to show the wave's direction of origin
+    backazimuth: if True, flip the sx and sy axes to show the wave's direction of origin
     
     """
     if type.lower() == 'clean':
         spec = clean_output['cleanSpec']
     elif type.lower() == 'original':
-        spec = clean_output['originalSpec']
+        total_power = np.real(np.einsum('iik->', clean_output['originalCrossSpec']))
+        spec = clean_output['originalSpec'] / total_power
     elif type.lower() == 'remaining':
-        spec = clean_output['remainingSpec']
+        total_power = np.real(np.einsum('iik->', clean_output['remainingCrossSpec']))
+        spec = clean_output['remainingSpec'] / total_power
     else:
         raise "Invalid 'type' in plot_freq_slow_spec"
     sx = clean_output['sx']
     sy = clean_output['sy']
     f = clean_output['freq']
-    if backAzimuth:
+    if backazimuth:
         spec = np.flip(spec, [1,2]) # flip it over dimensions x and y, but not f
         sx = -np.flip(sx)
         sy = -np.flip(sy)
@@ -552,14 +587,95 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean',
         iv0 = indVars[plot_comp[0]]
         iv1 = indVars[plot_comp[1]]
         image(mat, iv0, iv1, aspect = aspect, zmin = 0)
-        plt.xlabel(plot_comp[0])
-        plt.ylabel(plot_comp[1])
+        plt.xlabel(_comp_to_label(plot_comp[0], backazimuth))
+        plt.ylabel(_comp_to_label(plot_comp[1], backazimuth))
     if (plot_comp == 'xy') or (plot_comp == 'yx'):
         _circle(1000/325)
         _circle(1000/350)
         _circle(1) # seismic approximation
+        if(type == 'original' or type == 'remaining'):
+            #plt.clim([0,1])
+            cbar = plt.colorbar()
+            cbar.set_label('Semblance')
     plt.title(type)
     #print('Remember plt.show()') # necessary in terminal
+
+def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean', 
+                         fRange = [-np.Inf, np.Inf], azRange = [-np.Inf, np.Inf], 
+               shRange = [-np.Inf, np.Inf], imageAdj = None, backazimuth = True):
+    """
+    Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
+    
+    Parameters
+    ----------
+    clean_output: dict returned by clean()
+    plot_comp: a string including one or two of 'f' (frequency), 'h' (horizontal slowness), and 'a' 
+         (azimuth). When two components are provided, they are the x and y axis, and power is 
+         plotted as a color; when only one is provided, it is the x axis and power is the y axis.
+    type: one of 'clean', 'original', or 'remaining'
+    fRange: lower and upper limits for frequency axis
+    sxRange: lower and upper limits for x slowness axis
+    syRange: lower and upper limits for y slowness axis
+    imageAdj: optional function to change scaling of power
+    backazimuth: if True, flip the sx and sy axes to show the wave's direction of origin
+    
+    """
+    if type.lower() == 'clean':
+        spec = clean_output['cleanSpec']
+    elif type.lower() == 'original':
+        spec = clean_output['originalSpec']
+    elif type.lower() == 'remaining':
+        spec = clean_output['remainingSpec']
+    else:
+        raise "Invalid 'type' in plot_freq_slow_spec"
+    sx = clean_output['sx']
+    sy = clean_output['sy']
+    f = clean_output['freq']
+    if backazimuth:
+        spec = np.flip(spec, [1,2]) # flip it over dimensions x and y, but not f
+        sx = -np.flip(sx)
+        sy = -np.flip(sy)
+    spec, az, sh = _polar_transform(spec, sx, sy)
+    wf = (f >= fRange[0]) & (f <= fRange[1])
+    waz = (az >= azRange[0]) & (az <= azRange[1])
+    wsh = (sh >= shRange[0]) & (sh <= shRange[1])
+    mat = np.einsum('fah->' + plot_comp, spec[np.ix_(wf, waz, wsh)]) # np.ix_ does multidimensional broadcasting
+    if imageAdj is not None:
+        mat = imageAdj(mat)
+    indVars = {'f':f[wf], 'a': az[waz], 'h': sh[wsh]}
+    if len(plot_comp) == 1:
+        plt.plot(indVars[plot_comp], mat)
+        plt.xlabel(_comp_to_label(plot_comp[0], backazimuth))
+        plt.ylabel('Power')
+    if len(plot_comp) == 2:
+        iv0 = indVars[plot_comp[0]]
+        iv1 = indVars[plot_comp[1]]
+        image(mat, iv0, iv1, aspect = 'auto', zmin = 0)
+        plt.xlabel(_comp_to_label(plot_comp[0], backazimuth))
+        plt.ylabel(_comp_to_label(plot_comp[1], backazimuth))
+    plt.title(type)
+    #print('Remember plt.show()') # necessary in terminal
+def _az_dist(a, b):
+    """
+    Find angular distance between two azimuths. Result is always between -180 and 180.
+    """
+    return ((a - b + 180) % 360) - 180
+
+def _polar_transform(spec, sx_list, sy_list):
+    az_list = np.arange(36) * 10
+    r_list = np.concatenate([sx_list[sx_list >= 0], [sx_list.max() + eps]])
+    polar_spec = np.zeros([spec.shape[0], len(az_list), len(r_list)])
+    for i, sx in enumerate(sx_list):
+        for j, sy in enumerate(sy_list):
+            az = np.arctan2(sx, sy) * 180/np.pi
+            r = np.sqrt(sx**2 + sy**2)
+            m = np.argmin(np.abs(_az_dist(az, az_list)))
+            n = np.argmin(np.abs(r_list - r))
+            polar_spec[:,m,n] += spec[:,i,j]
+    r_list = r_list[:-1]
+    polar_spec = polar_spec[:,:,:-1]
+    return (polar_spec, az_list, r_list)
+
 
 def check_output_power(clean_output):
     """
@@ -608,6 +724,7 @@ def image(Z, x = None, y = None, aspect = 'equal', zmin = None, zmax = None, ax 
     im = ax.imshow(Z.transpose(), extent = [x[0], x[-1], y[0], y[-1]], aspect = aspect, 
                origin = 'lower', vmin = zmin, vmax = zmax, cmap = 'YlOrRd')
     if crosshairs:
-        ax.hlines(0, x[0], x[-1], 'k')
-        ax.vlines(0, y[0], y[-1], 'k')
+        ax.hlines(0, x[0], x[-1], 'k', linewidth=0.5)
+        ax.vlines(0, y[0], y[-1], 'k', linewidth=0.5)
     return im
+
