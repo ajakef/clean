@@ -83,8 +83,6 @@ result = clean.clean(stream, verbose = True, phi = 0.1, separateFreqs = 0, win_l
                               p_value=0.1, freq_bin_width = freq_bin_width, show_plots = False,
                               sxList = s_list, syList = s_list)
 
-asdflk.asdf
-
 #imageAdj = lambda x: np.log(x + x.max()*1e-3)
 #imageAdj = lambda x:x * (x>(x.max()*0.01))
 plt.close(4)
