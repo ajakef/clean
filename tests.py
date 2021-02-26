@@ -135,3 +135,9 @@ print((p_value, observed_detections))
 #assert np.abs(p_value - observed_detections) < error_bar, 'p_value test: Unexpected # false positives'
 
 
+#%%
+def test_demo_real():
+    import demo_real_data
+
+def test_demo_synth():
+    import demo_synthetic
