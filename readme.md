@@ -9,6 +9,9 @@ Then, download the repository either by clicking the creen "Code" button near th
 
 Finally, run the demos or tests functions. The demos show how it can be used. The tests are supposed to show that it does actually work. I suggest using a tool that supports cells like Spyder for running the code. 
 
+### Maturity: low to moderate
+The implementation details of the clean method are not considered final yet, and the code supports a lot of tuning and method selections by the user. Not all methods in the code are actually recommended for use (e.g., the "separate frequencies" option). This code has the beginnings of a test suite (providing basic protection for future edits) and docstrings are included in most of the important functions. Supporting functions are included, e.g. plotting tools and a function to create synthetic test data. The user can validate the code's functionality with demos using both real and synthetic data. It is not yet set up as an installable package and is not on PyPI.
+
 ### Issue 1: Incomplete power recovery in coherent wavefields
 This is a major question: in real data (but not synthetic data) with high signal-to-noise ratio and simple wavefields, why is the clean power not approximately equal to the total power? For example, see the primary earthquake infrasound in demo_real_data.py: peak magnitude-squared semblance is 0.8, but the clean spectrum only has about 60% of the total power. 
 
