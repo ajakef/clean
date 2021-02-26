@@ -39,8 +39,8 @@ jobs:
         #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with pytest
       run: |
-        #pytest *py
-        python *py
+        pytest -x *py
+        #python *py
   linting:
 
     runs-on: ubuntu-latest
