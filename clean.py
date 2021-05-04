@@ -40,6 +40,28 @@ def make_steering_vectors(geometry, stream, freqs, xSlowness, ySlowness = 0):
     clibsignal.calcSteer(len(stream), len(xSlowness), len(ySlowness), nf, nlow, deltaf, timeShiftTable, steeringVectors)
     return steeringVectors
 
+def make_steering_vectors_local(stream, geometry_src, freqs, c = 0.340):
+    # plane wave steering vector dimensions are 
+    # nf, nsx, nsy, nsta
+    # exp(1j * 2 * pi * f * dt)
+    geometry_array = np.array([[d for d in tr.stats.coordinates.values()] for tr in stream])
+    if isinstance(geometry_array, list):
+        geometry_array = np.array(geometry_array).transpose()
+    fs = stream[0].stats.sampling_rate
+    deltaf = freqs[1] - freqs[0]
+    freqs = freqs[1:]
+    nf = len(freqs)
+    nsta = geometry_array.shape[0]
+    nsrc = geometry_src.shape[0]
+    steeringVectors = np.empty((nf, nsrc, 1, nsta), dtype=np.complex128)
+    for i in range(nf):
+        for j in range(nsrc):
+            for k in range(1): # placeholder
+                for l in range(nsta):
+                    distance = np.sqrt((geometry_array[l,0] - geometry_src[j,0])**2 + (geometry_array[l,1] - geometry_src[j,1])**2)
+                    steeringVectors[i,j,k,l] = 1/distance * np.exp(2j * np.pi * freqs[i] * distance / c)
+    return steeringVectors
+
 def calc_fourier_window(stream, offset=0, taper = None, taper_param = 4, raw=False, prewhiten = False):
     spoint = np.zeros(len(stream))
     nsamp = len(stream[0])
@@ -66,7 +88,29 @@ def calc_fourier_window(stream, offset=0, taper = None, taper_param = 4, raw=Fal
     return ft, freqList
 
 def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False, win_length_sec = 1, 
-                        freq_bin_width = 1, prewhiten = False):
+                        freq_bin_width = 1, prewhiten = False, plot = False):
+    """
+    Calculates the cross-spectrum of traces in an obspy stream.
+    
+    Parameters
+    ----------
+    stream: obspy stream containing array data (and optionally coordinates in AttribDicts)
+    taper: used to taper time windows before calculating spectrum. Can be either default 'Tukey' or 
+         'multitaper', or a numpy.array containing the user-defined taper.
+    taper_param: unused for Tukey; refers to the time-bandwidth product for multitaper.
+    raw: if True, do not apply tapers or detrending when calculating spectrum and cross-spectrum
+    freq_bin_width: number of adjacent samples in spectrum contained in each frequency bin
+    prewhiten: if True, prewhiten spectra before calculating cross-spectrum
+    plot: if True, sum the cross-spectrum's modulus over frequency and plot as image
+    
+    Returns
+    -------
+    crossSpec_binned: binned cross-spectrum (indices trace 1, trace 2, freq)
+    FT: list of individual trace spectra
+    freqs_binned: list of frequencies corresponding to frequency indices
+    dfn: numerator degrees of freedom 
+    dfd: denominator degrees of freedom
+    """
     crossSpec = 0
     FT = 0 
     if (taper is not None) and (taper.lower() == 'multitaper'):
@@ -93,13 +137,12 @@ def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False
     else: # use default Tukey taper
         win_length_samp = int(np.round(win_length_sec / stream[0].stats.delta))
         data_length_samp = len(stream[0].data)
-        overlap = 0 # for possible future use. calculating degrees of freedom assumes non-overlapping windows.
-        num_windows = int(np.ceil(data_length_samp / (win_length_samp * (1 - overlap))))
+        overlap = 0.5 # for possible future use. calculating degrees of freedom assumes non-overlapping windows.
+        num_windows = 1 + int(np.ceil((data_length_samp - win_length_samp) / (win_length_samp * (1 - overlap))))
         for i in range(num_windows):
             win_start = int(np.round(i * (data_length_samp - win_length_samp) / (num_windows-1 + eps)))
             tmpStream = stream.copy()
             for tr in tmpStream:
-                #tr.data = tr.data[(i * winLength):((i+1) * winLength)]
                 tr.data = tr.data[win_start:(win_start + win_length_samp)]
             tmpFT, freqs = calc_fourier_window(tmpStream, offset, taper, taper_param, raw, prewhiten)
             crossSpec += np.einsum('ik,jk->ijk', tmpFT, tmpFT.conj())/num_windows # identical to _r from obspy, but reordered indices. i: station, j: station, k: freq
@@ -115,6 +158,8 @@ def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False
     ## calculate degrees of freedom
     dfn = 2 * (freq_bin_width-1 + num_windows) # so that bin width 1, having no extra freqs, adds no extra df
     dfd = (len(stream)-1) * dfn
+    if plot:
+        image(np.einsum('ijk->ij', np.abs(crossSpec_binned)))
     return crossSpec_binned, FT, freqs_binned, dfn, dfd
 
 
@@ -125,8 +170,9 @@ def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False
 ####################################################
 ####################################################
 
-def clean_loop(cleanSpec, crossSpec, wB, phi, stopF, separateFreqs, verbose, sxList, syList, show_plots):
+def clean_step(cleanSpec, crossSpec, wB, phi, stopF, separateFreqs, verbose, sxList, syList, show_plots):
     originalCrossSpec = crossSpec.copy()
+    dropped_power = 0 * crossSpec
     nsta = crossSpec.shape[0]
     done = False
     positive_freqs = np.ones(crossSpec.shape[2]) # these get set to zero when a frequency's power starts to get negative
@@ -155,29 +201,26 @@ def clean_loop(cleanSpec, crossSpec, wB, phi, stopF, separateFreqs, verbose, sxL
             Pmax = PP.max()
             imax,jmax = np.where(PP == Pmax); imax=imax[0]; jmax=jmax[0]
             #f_inds = crossSpec[0,0,:]*0 > -1 # throwaway to mean all f indices
-            f_inds = positive_freqs == 1
+            f_inds = (positive_freqs == 1)
             Ptotal = np.einsum('iik->', np.abs(crossSpec[:,:,f_inds]))
             Pmax = np.sum(P[f_inds, imax, jmax])
 
         ## Test whether the optimum slowness is coherent enough. If yes, adjust outputs accordingly. If not, break.
         stopCondition = Ptotal/(1 + (nsta-1)/stopF)
         remainingPower = np.abs(np.einsum('iij->', crossSpec) / np.einsum('iij->', originalCrossSpec))
-        #print(remainingPower)
         if (Pmax > stopCondition) and (remainingPower > 0.001):
             done = False
-            #compToRemove = np.einsum('i,ij,ik->jki',P[f_inds,imax,jmax], wB[f_inds,imax,jmax,:],
-            #                         wB[f_inds,imax,jmax,:].conj())
             compToRemove = phi * np.einsum('i,ij,ik->jki',P[:,imax,jmax], wB[:,imax,jmax,:],
                                      wB[:,imax,jmax,:].conj())
-            #newCrossSpec = crossSpec[:,:,f_inds] - phi * compToRemove
             for i in np.where(f_inds)[0]:
                 #if any([any(newCrossSpec[i,i,:] < 0) for i in range(nsta)]):
                 #if any(np.diag(crossSpec[:,:,i] - compToRemove[:,:,i]) < 0):
                 diags = np.diag(crossSpec[:,:,i] - compToRemove[:,:,i])
                 if np.mean(diags) < np.std(diags):# allow some negativity, but not much
                     print('Dropping freq index %d due to negative power' %i) 
-                    positive_freqs[i] = 0 # this prevents 
-                    #breakpoint()
+                    positive_freqs[i] = 0 
+                    dropped_power[:,:,i] = crossSpec[:,:,i]
+                    
             # this section causes problems with separateFreqs = 1...comment for now                        
             #if np.sum(compToRemove[:,:,f_inds & (positive_freqs == 1)]) == 0:
             #    breakpoint()
@@ -193,7 +236,7 @@ def clean_loop(cleanSpec, crossSpec, wB, phi, stopF, separateFreqs, verbose, sxL
         else:
             done = True
 
-    return {'cleanSpec':cleanSpec, 'crossSpec':crossSpec, 'remainingSpec':P}
+    return {'cleanSpec':cleanSpec, 'crossSpec':crossSpec, 'remainingSpec':P, 'droppedCrossSpec':dropped_power}
 
 def plot_slowness_spectrum(crossSpec, compToRemove, cleanSpec, originalCrossSpec, wB, sxList, syList, count):
     """
@@ -230,8 +273,54 @@ def plot_slowness_spectrum(crossSpec, compToRemove, cleanSpec, originalCrossSpec
     fig.savefig('/home/jake/Conferences/AGU2020/poster/plot_steps/plot_step_%.0f.png' % count)
     plt.close(fig)
     if count > 3: raise Exception()
+#####################################################
+## Function to step through a stream and clean all time windows
+def clean_loop(stream, loop_step = 1, loop_width=2, x = None, y = None, sxList = None, syList = None, phi = 0.1, p_value = 0.01, 
+          win_length_sec = 1, freq_bin_width = 1, freq_min = 0, freq_max = 15, separateFreqs = 0,
+          rawFT = False, taper = 'Tukey', taper_param = 4, prewhiten = False,
+          show_plots = False, verbose = True):
+    t1 = loop_start = stream[0].stats.starttime
+    loop_end = stream[0].stats.endtime
+    nt = int(1 + (loop_end - loop_start - loop_width) // loop_step)
+    z = np.zeros(nt)
+
+    #clean_output = {'t':z, 'sx':z, 'sy':z, 'f':z, 'power':z, 'cleanRatio' : z}
+    dirty_output = {'t':z, 'sx':z, 'sy':z, 'power':z}
     
-    
+    #while (t1 + loop_width) <= loop_end:
+    for i in range(nt):
+        st = stream.slice(t1, t1 + loop_width)
+        halftime = t1 + loop_width/2 - loop_start
+        print('%f of %f' % (halftime, loop_end - loop_start))
+        result = clean(st, verbose = False, phi = 0.2, separateFreqs = 0, win_length_sec = 1,
+                                  freq_bin_width = 1, freq_min = 0, freq_max = 25, 
+                                  sxList = sxList, syList = syList, prewhiten = False)
+        if t1 == loop_start: # allocate the output variables
+            freq = result['freq']
+            output = {'t':np.zeros(nt), 'sx':sxList, 'sy':syList, 'f':freq, 
+                      'original_power':np.zeros(nt), 'original_semblance':np.zeros(nt),
+                      'original_sx':np.zeros(nt), 'original_sy':np.zeros(nt), 
+                      'clean':np.zeros((nt, len(freq), len(sxList), len(syList))), 
+                      'original':np.zeros((nt, len(sxList), len(syList))),
+                      'all_data':[]}
+        ## populate the output variables
+        output['t'][i] = halftime
+        output['all_data'] = result
+        output['clean'][i,:,:,:] = result['cleanSpec']
+        output['original'][i,:,:] = np.einsum('ijk->jk',result['originalSpec'])
+        j_sx, k_sy = np.where(output['original'][i,:,:] == output['original'][i,:,:].max())
+        output['original_power'][i] = output['original'][i,j_sx,k_sy]
+        output['original_semblance'][i] = calc_semblance(result).max()
+        output['original_sx'][i] = sxList[j_sx]
+        output['original_sy'][i] = sxList[k_sy]
+        t1 += loop_step
+        
+ 
+    output['original_sh'] = np.sqrt(output['original_sx']**2+output['original_sy']**2)
+    output['original_az'] = np.arctan2(output['original_sx'], output['original_sy']) * 180/np.pi
+    output['clean_polar'], output['az'], output['sh'] = _polar_transform(output['clean'], sxList, syList)
+
+    return output    
 #####################################################
 ## Function to iteratively remove wavefield components from obspy stream
 def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p_value = 0.01, 
@@ -309,6 +398,7 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
     if verbose: print('Calculating steering vectors and weights')
     steeringVectors = make_steering_vectors(staLoc, stream, freqList, sxList, syList)
     steeringVectors = steeringVectors.conj() ## fix this eventually
+    breakpoint()
     wB_denom = np.sqrt(np.einsum('ijkl,ijkl->ijk', steeringVectors.conj(), steeringVectors))
     wB = steeringVectors.copy().conj() # freq, sx, sy, station
     for i in range(nsta):
@@ -323,13 +413,13 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
         print('Beginning cleaning loop')
         print('[sxList[imax], syList[jmax], Pmax/stopCondition]')
     cleanSpec = np.zeros(wB.shape[:3])
-    clean_output = clean_loop(cleanSpec, crossSpec, wB, phi, stopF, separateFreqs, verbose, sxList, syList, show_plots)
-    cleanSpec, crossSpec, remainingSpec = [clean_output[i] for i in ['cleanSpec', 'crossSpec', 'remainingSpec']]
+    clean_output = clean_step(cleanSpec, crossSpec, wB, phi, stopF, separateFreqs, verbose, sxList, syList, show_plots)
+    cleanSpec, crossSpec, remainingSpec, droppedCrossSpec = [clean_output[i] for i in ['cleanSpec', 'crossSpec', 'remainingSpec', 'droppedCrossSpec']]
 
     ## Print the remaining power and original power, and return
     print('Remaining power fraction: %.3f' % np.abs(np.einsum('iij->', crossSpec) / np.einsum('iij->', originalCrossSpec)))
     return {'cleanSpec':cleanSpec, 'originalSpec':originalSpec, 'remainingSpec':remainingSpec, 'remainingCrossSpec':crossSpec, 
-            'originalCrossSpec':originalCrossSpec, 'sx':sxList, 'sy':syList, 'freq':freqList}
+            'originalCrossSpec':originalCrossSpec, 'droppedCrossSpec':droppedCrossSpec, 'sx':sxList, 'sy':syList, 'freq':freqList}
 
 #####################
 def _process_inputs(stream, x = None, y = None, sxList = None, syList = None):
@@ -421,6 +511,42 @@ def make_synth_stream(Nt = 400, dt = 0.01, x = None, y = None, dx = None, dy = N
         data *= uncorrelatedNoiseAmp / np.std(data)
         for j in range(Nwaves):
             data += stf_list[j](t - x[i] * sx[j] - y[i] * sy[j])
+        tr = obspy.Trace(data)
+        loc = obspy.core.AttribDict()
+        loc['x'] = x[i]
+        loc['y'] = y[i]
+        loc['elevation'] = 0
+        tr.stats = obspy.core.Stats({**tr.stats, 'coordinates': loc})
+        tr.stats.delta = dt
+        tr.stats.location = str(i)
+        stream += tr
+    return stream
+
+def make_synth_stream_local(Nt = 400, dt = 0.01, x = None, y = None, dx = None, dy = None, Nx = None, 
+                    Ny = None, src_xyz = None, amp = None, fl = None, fh = None, fc = None, 
+                    uncorrelatedNoiseAmp = 0, prewhiten = True, c = 0.340):
+    x, y = _make_default_coords(x, y, dx, dy, Nx, Ny)
+    #sx, sy, amp, fl, fh = _make_default_waves(sx, sy, amp, fl, fh, fc)
+    nsrc = src_xyz.shape[0]
+    nsta = len(x)
+    sta_xyz = np.zeros([len(x), 3])
+    sta_xyz[:,0] = x; sta_xyz[:,1] = y
+    t = np.arange(Nt) * dt
+    overSample=10; Ntt = 2*overSample*Nt; dtt = dt/overSample
+    tt = (np.arange(Ntt)-Ntt/3)*dtt # provides padding and higher time res for interp (e.g., 0-1 s becomes -0.5 - 1.5 s)
+    stf_list = []
+    for i in range(nsrc):
+        [b,a]=scipy.signal.butter(4, [2*fl[i]*dtt,2*fh[i]*dtt], 'bandpass')
+        signal = scipy.signal.lfilter(b, a, _make_noise(Ntt, prewhiten))
+        signal *= amp[i]/np.std(signal)
+        stf_list.append(scipy.interpolate.interp1d(tt, signal, fill_value='extrapolate', kind='cubic'))
+    stream = obspy.Stream()
+    for i in range(nsta):
+        data = _make_noise(Nt, prewhiten)
+        data *= uncorrelatedNoiseAmp / np.std(data)
+        for j in range(nsrc):
+            distance = np.sqrt(np.sum((src_xyz[j,:] - sta_xyz[i,:])**2)) + 1e-6 # epsilon to prevent zero division
+            data += stf_list[j](t - distance/c) / distance
         tr = obspy.Trace(data)
         loc = obspy.core.AttribDict()
         loc['x'] = x[i]
@@ -531,9 +657,13 @@ def _comp_to_label(comp, backazimuth):
     else:
         return None
     
+def calc_semblance(clean_output, type = 'original'):
+    total_power = np.real(np.einsum('iik->', clean_output[type.lower() + 'CrossSpec']))
+    return np.einsum('ijk->jk', clean_output[type.lower() + 'Spec'] / total_power)
+
 def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblance = True,
-               fRange = [-np.Inf, np.Inf], sxRange = [-np.Inf, np.Inf], 
-               syRange = [-np.Inf, np.Inf], imageAdj = None, backazimuth = True):
+               fRange = [0, np.Inf], sxRange = [-4, 4], 
+               syRange = [-4, 4], imageAdj = None, backazimuth = True):
     """
     Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
     
@@ -553,12 +683,12 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
     """
     if type.lower() == 'clean':
         spec = clean_output['cleanSpec']
-    elif type.lower() == 'original':
-        total_power = np.real(np.einsum('iik->', clean_output['originalCrossSpec']))
-        spec = clean_output['originalSpec'] / total_power
-    elif type.lower() == 'remaining':
-        total_power = np.real(np.einsum('iik->', clean_output['remainingCrossSpec']))
-        spec = clean_output['remainingSpec'] / total_power
+    elif type.lower() == 'original' or type.lower() == 'remaining':
+        if semblance:
+            total_power = np.real(np.einsum('iik->', clean_output[type.lower() + 'CrossSpec']))
+            spec = clean_output[type.lower() + 'Spec'] / total_power
+        else:
+            spec = clean_output[type.lower() + 'Spec']
     else:
         raise "Invalid 'type' in plot_freq_slow_spec"
     sx = clean_output['sx']
@@ -578,13 +708,15 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
     if len(plot_comp) == 1:
         plt.plot(indVars[plot_comp], mat)
     if len(plot_comp) == 2:
-        if 'f' in plot_comp:
-            aspect = 'auto'
-        else:
-            aspect = 'equal'
+
         iv0 = indVars[plot_comp[0]]
         iv1 = indVars[plot_comp[1]]
-        image(mat, iv0, iv1, aspect = aspect, zmin = 0)
+        image(mat, iv0, iv1, zmin = 0)
+        if 'f' in plot_comp:
+            #aspect = 'auto'
+            pass
+        else:
+            plt.axis('square')
         plt.xlabel(_comp_to_label(plot_comp[0], backazimuth))
         plt.ylabel(_comp_to_label(plot_comp[1], backazimuth))
     if (plot_comp == 'xy') or (plot_comp == 'yx'):
@@ -600,7 +732,7 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
 
 def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean', 
                          fRange = [-np.Inf, np.Inf], azRange = [-np.Inf, np.Inf], 
-               shRange = [-np.Inf, np.Inf], imageAdj = None, backazimuth = True):
+               shRange = [0, 4], imageAdj = None, backazimuth = True):
     """
     Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
     
@@ -659,19 +791,35 @@ def _az_dist(a, b):
     """
     return ((a - b + 180) % 360) - 180
 
-def _polar_transform(spec, sx_list, sy_list):
+def _polar_transform(spec, sx_list, sy_list, az_start = 0, backazimuth = False):
     az_list = np.arange(36) * 10
+    az_list = ((az_list - az_start) % 360) + az_start
+
     r_list = np.concatenate([sx_list[sx_list >= 0], [sx_list.max() + eps]])
-    polar_spec = np.zeros([spec.shape[0], len(az_list), len(r_list)])
+    if len(spec.shape) == 3:
+        polar_spec = np.zeros([spec.shape[0], len(az_list), len(r_list)])
+    elif len(spec.shape) == 4:
+        polar_spec = np.zeros([spec.shape[0], spec.shape[1], len(az_list), len(r_list)])
     for i, sx in enumerate(sx_list):
         for j, sy in enumerate(sy_list):
-            az = np.arctan2(sx, sy) * 180/np.pi
+            if backazimuth:
+                az = np.arctan2(-sx, -sy) * 180/np.pi
+            else:
+                az = np.arctan2(-sx, -sy) * 180/np.pi
             r = np.sqrt(sx**2 + sy**2)
             m = np.argmin(np.abs(_az_dist(az, az_list)))
             n = np.argmin(np.abs(r_list - r))
-            polar_spec[:,m,n] += spec[:,i,j]
+            if len(spec.shape) == 3:
+                polar_spec[:,m,n] += spec[:,i,j]
+            elif len(spec.shape) == 4:
+                polar_spec[:,:,m,n] += spec[:,:,i,j]
+    # drop the last r (unphysical excessive slowness)
     r_list = r_list[:-1]
-    polar_spec = polar_spec[:,:,:-1]
+    if len(spec.shape) == 3:
+        polar_spec = polar_spec[:,:,:-1]
+    elif len(spec.shape)==4:
+        polar_spec = polar_spec[:,:,:,:-1]
+       
     return (polar_spec, az_list, r_list)
 
 
@@ -719,8 +867,9 @@ def image(Z, x = None, y = None, aspect = 'equal', zmin = None, zmax = None, ax 
         x = np.arange(Z.shape[0])
     if y is None:
         y = np.arange(Z.shape[1])
-    im = ax.imshow(Z.transpose(), extent = [x[0], x[-1], y[0], y[-1]], aspect = aspect, 
-               origin = 'lower', vmin = zmin, vmax = zmax, cmap = 'YlOrRd')
+    #im = ax.imshow(Z.transpose(), extent = [x[0], x[-1], y[0], y[-1]], aspect = aspect, 
+    #           origin = 'lower', vmin = zmin, vmax = zmax, cmap = 'YlOrRd')
+    im = ax.pcolormesh(x, y, Z.T, vmin = zmin, vmax = zmax, cmap='YlOrRd')
     if crosshairs:
         ax.hlines(0, x[0], x[-1], 'k', linewidth=0.5)
         ax.vlines(0, y[0], y[-1], 'k', linewidth=0.5)
