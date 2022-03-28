@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from numpy import pi, sqrt, sin, cos, exp
 import obspy
 import importlib
-import mtspec
+#import mtspec
 import clean
 
 try:

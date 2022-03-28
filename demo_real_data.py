@@ -1,10 +1,9 @@
-import 
-numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 import obspy, scipy
-import clean
 import sys
-#sys.path.append('/home/jake/Work/Aftershocks/lib/clean')
+sys.path.append('/home/jake/Work/Aftershocks/lib/clean')
+import clean
 try:
     import importlib
     importlib.reload(clean)
@@ -27,7 +26,7 @@ t2 = eq_stream[0].stats.endtime # end of trace
 t_trans = obspy.UTCDateTime('2020-04-14T03:27:08.9') # transition between primary-secondary sound
 
 ## define slowness grid to search
-s_list = np.arange(-4, 4, 0.25)
+s_list = np.arange(-4, 4, 0.1)
 
 #%%
 ## Aftershock primary infrasound (seismic-acoustic conversion at the array)
@@ -35,10 +34,17 @@ s_list = np.arange(-4, 4, 0.25)
 ## Consequently, the Clean spectrum is mostly concentrated around the bullseye.
 
 st = eq_stream.slice(t_trans - 4, t_trans-0.2)
+#st = st[17:] #+ st[14:15] 
+st = st[17:] # smallest triangle 0.113 power ratio
+#st = st[6:7] + st[9:11] # medium triangle 0.208 power ratio
+#st = st[3:5] + st[16:17] # huge triangle 0.0452 power ratio
+clean.plot_distances(st, .05)
+#%%
+distances = clean.calc_station_pair_distance(eq_stream)
 
-result = clean.clean(st, verbose = True, phi = 0.01, separateFreqs = 0, win_length_sec = 0.5,
-                              freq_bin_width = 1, freq_min = 0, freq_max = 20, 
-                              sxList = s_list, syList = s_list, prewhiten = False)
+result = clean.clean(st, verbose = True, phi = 0.01, separate_freqs = 0, win_length_sec = 0.5,
+                              freq_bin_width = 1, freq_min = 4, freq_max = 8, 
+                              sxList = s_list, syList = s_list, prewhiten = False)#,                               cross_spec_weights = distances < 0.05)
 
 plt.close(1)
 plt.figure(1)
