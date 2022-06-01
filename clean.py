@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-#from future.builtins import *  # NOQA
+from future.builtins import *  # NOQA
 
 #import math
 import warnings
@@ -734,12 +734,15 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
             #cbar = plt.colorbar()
             cbar = fig.colorbar(im, ax = ax)
             cbar.set_label('Semblance')
+            print('made colorbar')
     plt.title(type)
+    return fig, ax
     #print('Remember plt.show()') # necessary in terminal
 
 def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean', 
                          fRange = [-np.Inf, np.Inf], azRange = [-np.Inf, np.Inf], 
-                         shRange = [0, 4], imageAdj = None, backazimuth = True):
+                         shRange = [0, 4], imageAdj = None, backazimuth = True,
+                         fig = None, ax = None):
     """
     Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
     
@@ -888,7 +891,7 @@ def add_xy_coords(st, x, y, z = None):
     y = np.array(y)
     if z is None:
         z = x * 0
-    for tr in st:
+    for i, tr in enumerate(st):
         loc = obspy.core.AttribDict()
         loc['x'] = x[i]
         loc['y'] = y[i]
@@ -913,7 +916,7 @@ def add_latlon_coords(st, lat, lon, z = None):
     lon = np.array(lon)
     if z is None:
         z = lat * 0
-    for tr in st:
+    for i, tr in enumerate(st):
         loc = obspy.core.AttribDict()
         loc['latitude'] = lat[i]
         loc['longitude'] = lon[i]

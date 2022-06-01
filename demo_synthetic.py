@@ -15,11 +15,10 @@ except:
 stream = clean.make_synth_stream(sx = [0], sy = [0], amp = [0], uncorrelatedNoiseAmp=10) # x,y are built into stream
 plt.plot(np.abs(np.fft.fft(stream[0].data)))
 result = clean.clean(stream, verbose = True, phi=0.1, syList = [0], separateFreqs = 0, p_value = 0.01)
-plt.figure(1)
-plt.subplot(1,2,1)
-clean.plot_freq_slow_spec(result, 'fx')#, fRange = [0,10])
-plt.subplot(1,2,2)
-clean.plot_freq_slow_spec(result, 'fx', type = 'original')#, fRange=[0,10])
+fig, ax = plt.subplots(3, 1)
+clean.plot_freq_slow_spec(result, 'fx', fig = fig, ax = ax[0])#, fRange = [0,10])
+clean.plot_freq_slow_spec(result, 'fx', type = 'original', fig = fig, ax = ax[1])#, fRange=[0,10])
+clean.plot_freq_slow_spec(result, 'xy', type = 'original', fig = fig, ax = ax[2])#, fRange=[0,10])
 plt.tight_layout()
 
 #%% Simple test with defaults (1 wave, 2.56 sec, sx=sy=0, signal freq 1-4, no noise)
