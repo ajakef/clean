@@ -1,8 +1,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from future.builtins import *  # NOQA
+#from future.builtins import *  # NOQA
 
-import math
+#import math
 import warnings
 
 import numpy as np
@@ -662,8 +662,9 @@ def calc_semblance(clean_output, type = 'original'):
     return np.einsum('ijk->jk', clean_output[type.lower() + 'Spec'] / total_power)
 
 def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblance = True,
-               fRange = [0, np.Inf], sxRange = [-4, 4], 
-               syRange = [-4, 4], imageAdj = None, backazimuth = True):
+                        fRange = [0, np.Inf], sxRange = [-4, 4], 
+                        syRange = [-4, 4], imageAdj = None, backazimuth = True,
+                        fig = None, ax = None):
     """
     Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
     
@@ -679,6 +680,8 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
     syRange: lower and upper limits for y slowness axis
     imageAdj: optional function to change scaling of power
     backazimuth: if True, flip the sx and sy axes to show the wave's direction of origin
+    fig, ax: optional; if given, figure and axis to plot on. Both fig and ax must be provided; 
+         otherwise, a new figure/axis will be used.
     
     """
     if type.lower() == 'clean':
@@ -691,6 +694,9 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
             spec = clean_output[type.lower() + 'Spec']
     else:
         raise "Invalid 'type' in plot_freq_slow_spec"
+
+    if (fig is None) or (ax is None):
+        fig, ax = plt.subplots()
     sx = clean_output['sx']
     sy = clean_output['sy']
     f = clean_output['freq']
@@ -706,33 +712,34 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
         mat = imageAdj(mat)
     indVars = {'f':f[wf], 'x': sx[wsx], 'y': sy[wsy]}
     if len(plot_comp) == 1:
-        plt.plot(indVars[plot_comp], mat)
+        ax.plot(indVars[plot_comp], mat)
     if len(plot_comp) == 2:
 
         iv0 = indVars[plot_comp[0]]
         iv1 = indVars[plot_comp[1]]
-        image(mat, iv0, iv1, zmin = 0)
+        im = image(mat, iv0, iv1, zmin = 0, ax = ax)
         if 'f' in plot_comp:
             #aspect = 'auto'
             pass
         else:
-            plt.axis('square')
-        plt.xlabel(_comp_to_label(plot_comp[0], backazimuth))
-        plt.ylabel(_comp_to_label(plot_comp[1], backazimuth))
+            ax.axis('square')
+        ax.set_xlabel(_comp_to_label(plot_comp[0], backazimuth))
+        ax.set_ylabel(_comp_to_label(plot_comp[1], backazimuth))
     if (plot_comp == 'xy') or (plot_comp == 'yx'):
         _circle(1000/325)
         _circle(1000/350)
         _circle(1) # seismic approximation
         if(type == 'original' or type == 'remaining'):
             #plt.clim([0,1])
-            cbar = plt.colorbar()
+            #cbar = plt.colorbar()
+            cbar = fig.colorbar(im, ax = ax)
             cbar.set_label('Semblance')
     plt.title(type)
     #print('Remember plt.show()') # necessary in terminal
 
 def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean', 
                          fRange = [-np.Inf, np.Inf], azRange = [-np.Inf, np.Inf], 
-               shRange = [0, 4], imageAdj = None, backazimuth = True):
+                         shRange = [0, 4], imageAdj = None, backazimuth = True):
     """
     Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
     
@@ -750,6 +757,9 @@ def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean',
     backazimuth: if True, flip the sx and sy axes to show the wave's direction of origin
     
     """
+    if (fig is None) or (ax is None):
+        fig, ax = plt.subplots()
+
     if type.lower() == 'clean':
         spec = clean_output['cleanSpec']
     elif type.lower() == 'original':
@@ -774,16 +784,16 @@ def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean',
         mat = imageAdj(mat)
     indVars = {'f':f[wf], 'a': az[waz], 'h': sh[wsh]}
     if len(plot_comp) == 1:
-        plt.plot(indVars[plot_comp], mat)
-        plt.xlabel(_comp_to_label(plot_comp[0], backazimuth))
-        plt.ylabel('Power')
+        ax.plot(indVars[plot_comp], mat)
+        ax.xlabel(_comp_to_label(plot_comp[0], backazimuth))
+        ax.ylabel('Power')
     if len(plot_comp) == 2:
         iv0 = indVars[plot_comp[0]]
         iv1 = indVars[plot_comp[1]]
         image(mat, iv0, iv1, aspect = 'auto', zmin = 0)
-        plt.xlabel(_comp_to_label(plot_comp[0], backazimuth))
-        plt.ylabel(_comp_to_label(plot_comp[1], backazimuth))
-    plt.title(type)
+        ax.set_xlabel(_comp_to_label(plot_comp[0], backazimuth))
+        ax.set_ylabel(_comp_to_label(plot_comp[1], backazimuth))
+    ax.title(type)
     #print('Remember plt.show()') # necessary in terminal
 def _az_dist(a, b):
     """
@@ -805,7 +815,7 @@ def _polar_transform(spec, sx_list, sy_list, az_start = 0, backazimuth = False):
             if backazimuth:
                 az = np.arctan2(-sx, -sy) * 180/np.pi
             else:
-                az = np.arctan2(-sx, -sy) * 180/np.pi
+                az = np.arctan2(sx, sy) * 180/np.pi
             r = np.sqrt(sx**2 + sy**2)
             m = np.argmin(np.abs(_az_dist(az, az_list)))
             n = np.argmin(np.abs(r_list - r))
@@ -860,7 +870,57 @@ def add_inv_coords(st, inv):
     for tr in st:
         loc = obspy.core.AttribDict(inv.get_coordinates(tr.get_id()))
         tr.stats = obspy.core.Stats({**tr.stats, 'coordinates': loc})
-    
+
+def add_xy_coords(st, x, y, z = None):
+    """
+    For each trace tr in stream st, adds a 'coordinates' AttribDict to tr.stats using location info
+    from user-provided cartesian coordinate arrays. See application in 
+    obspy.signal.array_analysis.array_processing.
+
+    Parameters
+    ----------
+    st: stream that locations should be added to
+    inv: inventory containing locations for all traces in st
+
+    Returns: None, changes st in place
+    """
+    x = np.array(x)
+    y = np.array(y)
+    if z is None:
+        z = x * 0
+    for tr in st:
+        loc = obspy.core.AttribDict()
+        loc['x'] = x[i]
+        loc['y'] = y[i]
+        loc['elevation'] = z[i]
+        tr.stats = obspy.core.Stats({**tr.stats, 'coordinates': loc})
+    return st
+
+def add_latlon_coords(st, lat, lon, z = None):
+    """
+    For each trace tr in stream st, adds a 'coordinates' AttribDict to tr.stats using location info
+    from user-provided lat/lon coordinate arrays. See application in 
+    obspy.signal.array_analysis.array_processing.
+
+    Parameters
+    ----------
+    st: stream that locations should be added to
+    inv: inventory containing locations for all traces in st
+
+    Returns: None, changes st in place
+    """
+    lat = np.array(lat)
+    lon = np.array(lon)
+    if z is None:
+        z = lat * 0
+    for tr in st:
+        loc = obspy.core.AttribDict()
+        loc['latitude'] = lat[i]
+        loc['longitude'] = lon[i]
+        loc['elevation'] = z[i]
+        tr.stats = obspy.core.Stats({**tr.stats, 'coordinates': loc})
+    return st
+
 def image(Z, x = None, y = None, aspect = 'equal', zmin = None, zmax = None, ax = plt, crosshairs=True):
     # Z rows are x, columns are y
     if x is None:
