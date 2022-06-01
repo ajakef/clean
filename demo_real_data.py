@@ -15,7 +15,7 @@ except:
 ## Load an earthquake recording. This includes preliminary background noise,
 ## primary infrasound (simple wavefield), and secondary infrasound (diffuse wavefield)
 
-eq_stream = obspy.read('data/aftershock.mseed')
+eq_stream = obspy.read('data/aftershock_beginning.mseed')
 eq_stream.filter('highpass', freq=2)
 inv = obspy.read_inventory('data/XP_PARK_inventory.xml') # includes coordinates
 clean.add_inv_coords(eq_stream, inv) # store the coordinates in the stream
@@ -23,7 +23,6 @@ clean.add_inv_coords(eq_stream, inv) # store the coordinates in the stream
 ## define significant times in the data
 t1 = eq_stream.traces[0].stats.starttime # start of trace
 t2 = eq_stream[0].stats.endtime # end of trace
-t_trans = obspy.UTCDateTime('2020-04-14T03:27:08.9') # transition between primary-secondary sound
 
 ## define slowness grid to search
 s_list = np.arange(-4, 4, 0.25)
@@ -33,7 +32,7 @@ s_list = np.arange(-4, 4, 0.25)
 ## This moves at seismic wave speeds and should have very low slowness values.
 ## Consequently, the Clean spectrum is mostly concentrated around the bullseye.
 
-st = eq_stream.slice(t_trans - 4, t_trans-0.2)
+st = eq_stream.slice(t2 - 4, t2-0.2)
 
 result = clean.clean(st, verbose = True, phi = 0.01, separateFreqs = 0, win_length_sec = 0.5,
                               freq_bin_width = 1, freq_min = 0, freq_max = 20, 
@@ -53,36 +52,10 @@ clean.polar_freq_slow_spec(result, 'fa')
 plt.tight_layout()
 
 #%%
-## Aftershock secondary infrasound (seismic-to-acoustic conversion away from the array)
-## Slowness should mostly be that of horizontally-propagating acoustic waves.
-## Consequently, the energy should mainly be on the 3 s/km circle.
-
-st = eq_stream.slice(t_trans+2, t2)
-#st.pop(4) # signals at index 4 are weirdly quiet
-#st.pop(6)
-s_list = np.arange(-4, 4, 0.25)
-result = clean.clean(st, verbose = True, phi = 0.05, separateFreqs = 0, win_length_sec = 0.5, 
-                              freq_bin_width = 1, freq_min = 1, freq_max = 25, 
-                              sxList = s_list, syList = s_list, p_value = 0.0001)
-plt.close(23)
-plt.figure(23)
-plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy', 'original')
-plt.subplot(2,2,2)
-clean.plot_freq_slow_spec(result, 'xy')
-plt.subplot(2,2,3)
-clean.polar_freq_slow_spec(result, 'fh')
-plt.subplot(2,2,4)
-clean.polar_freq_slow_spec(result, 'fa', 'clean')
-
-plt.tight_layout()
-
-
-#%%
 ## Background sounds before aftershock begins
 ## The clean spectrum should have little energy and should be concentrated around 3 s/km 
 
-st = eq_stream.slice(t_trans-20, t_trans-10)
+st = eq_stream.slice(t2-20, t2-10)
 
 s_list = np.arange(-4, 4, 0.25)
 result = clean.clean(st, verbose = True, phi = 0.2, win_length_sec=1, 
@@ -123,8 +96,8 @@ plt.tight_layout()
 
 
 #%% loop through time
-loop_start = t_trans - 10
-loop_end = t_trans + 30
+loop_start = t2 - 10
+loop_end = t2
 loop_step = 2
 loop_width = 4
 t1 = loop_start
