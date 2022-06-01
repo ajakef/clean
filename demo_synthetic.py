@@ -15,10 +15,9 @@ except:
 stream = clean.make_synth_stream(sx = [0], sy = [0], amp = [0], uncorrelatedNoiseAmp=10) # x,y are built into stream
 plt.plot(np.abs(np.fft.fft(stream[0].data)))
 result = clean.clean(stream, verbose = True, phi=0.1, syList = [0], separateFreqs = 0, p_value = 0.01)
-fig, ax = plt.subplots(3, 1)
+fig, ax = plt.subplots(2, 1)
 clean.plot_freq_slow_spec(result, 'fx', fig = fig, ax = ax[0])#, fRange = [0,10])
 clean.plot_freq_slow_spec(result, 'fx', type = 'original', fig = fig, ax = ax[1])#, fRange=[0,10])
-clean.plot_freq_slow_spec(result, 'xy', type = 'original', fig = fig, ax = ax[2])#, fRange=[0,10])
 plt.tight_layout()
 
 #%% Simple test with defaults (1 wave, 2.56 sec, sx=sy=0, signal freq 1-4, no noise)
@@ -28,10 +27,10 @@ stream = clean.make_synth_stream() # x,y are built into stream
 plt.figure(2)
 plt.plot(np.abs(np.fft.fft(stream[0].data)))
 result = clean.clean(stream, verbose = True, phi=0.2, win_length_sec=2)
-plt.subplot(1,2,1)
-clean.plot_freq_slow_spec(result, 'fx', fRange = [0,10])
-plt.subplot(1,2,2)
-clean.plot_freq_slow_spec(result, 'fx', type = 'original', fRange=[0,10])
+fig, ax = plt.subplots(3, 1)
+clean.plot_freq_slow_spec(result, 'fx', fRange = [0,10], fig = fig, ax = ax[0])
+clean.plot_freq_slow_spec(result, 'fx', type = 'original', fRange=[0,10], fig = fig, ax = ax[1])
+clean.plot_freq_slow_spec(result, 'xy', type = 'original', fRange=[0,10], fig = fig, ax = ax[2])
 plt.tight_layout()
 
 ## power considerations:
@@ -55,15 +54,11 @@ result = clean.clean(stream, verbose = True, phi = 0.5, separateFreqs = 0, win_l
                               sxList = s_list, syList = s_list)
 
 plt.close(3)                              
-plt.figure(3)
-plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy')
-plt.subplot(2,2,2)
-clean.plot_freq_slow_spec(result, 'xy', 'original')
-plt.subplot(2,2,3)
-clean.plot_freq_slow_spec(result, 'fx')
-plt.subplot(2,2,4)
-clean.plot_freq_slow_spec(result, 'fx', 'original')
+fig, ax = plt.subplots(2,2)
+clean.plot_freq_slow_spec(result, 'xy', fig = fig, ax = ax[0,0])
+clean.plot_freq_slow_spec(result, 'xy', 'original', fig = fig, ax = ax[0,1])
+clean.plot_freq_slow_spec(result, 'fx', fig = fig, ax = ax[1,0])
+clean.plot_freq_slow_spec(result, 'fx', 'original', fig = fig, ax = ax[1,1])
 plt.tight_layout()
 
 clean.check_output_power(result)

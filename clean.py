@@ -224,8 +224,10 @@ def clean_step(cleanSpec, crossSpec, wB, phi, stopF, separateFreqs, verbose, sxL
             # this section causes problems with separateFreqs = 1...comment for now                        
             #if np.sum(compToRemove[:,:,f_inds & (positive_freqs == 1)]) == 0:
             #    breakpoint()
-            if remainingPower > (1+1e-9):
-                breakpoint()
+
+            ## if remaining power is > 1, there's a problem
+            #if remainingPower > (1+1e-9):
+            #    breakpoint()
             cleanSpec[f_inds, imax, jmax] += phi * P[f_inds, imax, jmax] * positive_freqs[f_inds]
             if show_plots:
                 plot_slowness_spectrum(crossSpec, compToRemove, cleanSpec, originalCrossSpec, wB, sxList, syList, count)
@@ -398,7 +400,7 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
     if verbose: print('Calculating steering vectors and weights')
     steeringVectors = make_steering_vectors(staLoc, stream, freqList, sxList, syList)
     steeringVectors = steeringVectors.conj() ## fix this eventually
-    breakpoint()
+    #breakpoint()
     wB_denom = np.sqrt(np.einsum('ijkl,ijkl->ijk', steeringVectors.conj(), steeringVectors))
     wB = steeringVectors.copy().conj() # freq, sx, sy, station
     for i in range(nsta):
@@ -788,15 +790,15 @@ def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean',
     indVars = {'f':f[wf], 'a': az[waz], 'h': sh[wsh]}
     if len(plot_comp) == 1:
         ax.plot(indVars[plot_comp], mat)
-        ax.xlabel(_comp_to_label(plot_comp[0], backazimuth))
-        ax.ylabel('Power')
+        ax.set_xlabel(_comp_to_label(plot_comp[0], backazimuth))
+        ax.set_ylabel('Power')
     if len(plot_comp) == 2:
         iv0 = indVars[plot_comp[0]]
         iv1 = indVars[plot_comp[1]]
         image(mat, iv0, iv1, aspect = 'auto', zmin = 0)
         ax.set_xlabel(_comp_to_label(plot_comp[0], backazimuth))
         ax.set_ylabel(_comp_to_label(plot_comp[1], backazimuth))
-    ax.title(type)
+    ax.set_title(type)
     #print('Remember plt.show()') # necessary in terminal
 def _az_dist(a, b):
     """
