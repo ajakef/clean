@@ -23,6 +23,7 @@ clean.add_inv_coords(eq_stream, inv) # store the coordinates in the stream
 ## define significant times in the data
 t1 = eq_stream.traces[0].stats.starttime # start of trace
 t2 = eq_stream[0].stats.endtime # end of trace
+t_trans = obspy.UTCDateTime('2020-04-14T03:27:08.9') # transition between primary-secondary sound
 
 ## define slowness grid to search
 s_list = np.arange(-4, 4, 0.1)
@@ -41,7 +42,7 @@ st = st[3:5] + st[16:17] # huge triangle 0.0452 power ratio, severe aliasing
 plt.close(0)
 plt.figure(0)
 clean.plot_distances(st, 0) # plot the array (or sub-array) geometry
-#%%
+
 distances = clean.calc_station_pair_distance(eq_stream)
 
 result = clean.clean(st, verbose = True, phi = 0.01, separate_freqs = 0, win_length_sec = 0.5,
@@ -58,31 +59,6 @@ plt.subplot(2,2,3)
 clean.polar_freq_slow_spec(result, 'fh')
 plt.subplot(2,2,4)
 clean.polar_freq_slow_spec(result, 'fa')
-
-plt.tight_layout()
-
-
-
-#%% Process secondary infrasound
-## Aftershock secondary infrasound (seismic-to-acoustic conversion away from the array)
-## Slowness should mostly be that of horizontally-propagating acoustic waves.
-## Consequently, the energy should mainly be on the 3 s/km circle.
-
-st = eq_stream.slice(t_trans+2, t2)
-s_list = np.arange(-4, 4, 0.25)
-result = clean.clean(st, verbose = True, phi = 0.05, separate_freqs = 0, win_length_sec = 0.5, 
-                              freq_bin_width = 1, freq_min = 1, freq_max = 25, 
-                              sxList = s_list, syList = s_list, p_value = 0.0001)
-plt.close(2)
-plt.figure(2)
-plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy', 'original')
-plt.subplot(2,2,2)
-clean.plot_freq_slow_spec(result, 'xy')
-plt.subplot(2,2,3)
-clean.polar_freq_slow_spec(result, 'fh')
-plt.subplot(2,2,4)
-clean.polar_freq_slow_spec(result, 'fa', 'clean')
 
 plt.tight_layout()
 
