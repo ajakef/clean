@@ -21,7 +21,9 @@ except:
 
 eps = 1e-12
 
-def make_steering_vectors(geometry, stream, freqs, xSlowness, ySlowness = 0):
+def make_steering_vectors_old(geometry, stream, freqs, xSlowness, ySlowness = 0):
+    if freqs[0] != 0:
+        raise Exception('make_steering_vectors has a bug that requires freq_min to be 0.')
     if isinstance(geometry, list):
         geometry = np.array(geometry).transpose()
     ## define the frequency axis
@@ -38,6 +40,7 @@ def make_steering_vectors(geometry, stream, freqs, xSlowness, ySlowness = 0):
         my[:, np.newaxis, :].repeat(len(xSlowness), axis=1), dtype=np.float32)
     ## code adapted from array_processing
     steering_vectors = np.empty((nf, len(xSlowness), len(ySlowness), len(stream)), dtype=np.complex128)
+    ## calcsteer doesn't handle user-set freqs well, so use the replacement function instead of this one
     clibsignal.calcSteer(len(stream), len(xSlowness), len(ySlowness), nf, nlow, deltaf, timeShiftTable, steering_vectors)
     return steering_vectors
 
@@ -53,6 +56,26 @@ def get_stream_coordinates1(st):
         geometry_array = np.vstack([x,y]).transpose()
     return geometry_array
 
+def make_steering_vectors(stream, freqs, xSlowness, ySlowness = [0]):
+    # plane wave steering vector dimensions are 
+    # nf, nsx, nsy, nsta
+    # exp(1j * 2 * pi * f * dt)
+    geometry_array = get_stream_coordinates(stream)
+    if isinstance(geometry_array, list):
+        geometry_array = np.array(geometry_array).transpose()
+    fs = stream[0].stats.sampling_rate
+    #deltaf = freqs[1] - freqs[0]
+
+    nf = len(freqs)
+    nsta = geometry_array.shape[0]
+    nsx = len(xSlowness)
+    nsy = len(ySlowness)
+
+    ff, sx, sy, array_xx = np.meshgrid(freqs, xSlowness, ySlowness, geometry_array[:,0], indexing = 'ij')
+    ff, sx, sy, array_yy = np.meshgrid(freqs, xSlowness, ySlowness, geometry_array[:,1], indexing = 'ij')
+    steering_vectors = np.exp(-2j * np.pi * ff * (sx*array_xx + sy*array_yy))
+    return steering_vectors
+    
 def make_steering_vectors_local(stream, geometry_src, freqs, c = 0.340):
     # plane wave steering vector dimensions are 
     # nf, nsx, nsy, nsta
@@ -62,7 +85,7 @@ def make_steering_vectors_local(stream, geometry_src, freqs, c = 0.340):
     if isinstance(geometry_array, list):
         geometry_array = np.array(geometry_array).transpose()
     fs = stream[0].stats.sampling_rate
-    deltaf = freqs[1] - freqs[0]
+    #deltaf = freqs[1] - freqs[0]
     #freqs = freqs[1:]
     nf = len(freqs)
     nsta = geometry_array.shape[0]
@@ -342,7 +365,7 @@ def clean_loop(stream, loop_step = 1, loop_width=2, x = None, y = None, sxList =
         st = stream.slice(t1, t1 + loop_width)
         halftime = t1 + loop_width/2 - loop_start
         print('%f of %f' % (halftime, loop_end - loop_start))
-        result = clean(st, verbose = False, phi = phi, separate_freqs = separate_freqs, win_length_sec = win_length_sec,
+        result = clean(st, verbose = verbose, phi = phi, separate_freqs = separate_freqs, win_length_sec = win_length_sec,
                                   freq_bin_width = freq_bin_width, freq_min = freq_min, freq_max = freq_max, 
                                   sxList = sxList, syList = syList, prewhiten = False)
         if t1 == loop_start: # allocate the output variables
@@ -454,14 +477,9 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
     ## calculate the steering vectors and weights
     if verbose: print('Calculating steering vectors and weights')
     if steering_vectors is None:
-        steering_vectors = make_steering_vectors(staLoc, stream, freqList, sxList, syList)
-        #steering_vectors = steering_vectors.conj() ## fix this eventually
-    #steering_vectors = 1/steering_vectors
+        #steering_vectors = make_steering_vectors(staLoc, stream, freqList, sxList, syList)
+        steering_vectors = make_steering_vectors(stream, freqList, sxList, syList)
 
-    #wB_denom = np.sqrt(np.einsum('ijkl,ijkl->ijk', steering_vectors.conj(), steering_vectors))
-    #wB = steering_vectors.copy().conj() # freq, sx, sy, station
-    #for i in range(nsta):
-    #    wB[:,:,:,i] /= wB_denom
     wB = calc_weights(steering_vectors)
     ## save the spectra before cleaning
     originalCrossSpec = cross_spec.copy()
