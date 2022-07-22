@@ -42,7 +42,7 @@ clean_power = np.sum(result['cleanSpec'])
 
 
 #%% Large-N style test; pure noise: the goal is to see if we get false detections. 
-## The result depends on the p-value: false detections often occur at p<0.01 but not p<0.0001.
+## Result depends on the p-value
 
 num_windows = 8
 win_length_sec = 1
@@ -122,15 +122,17 @@ clean.polar_freq_slow_spec(result, 'fa')
 plt.tight_layout()
 
 #%% Large-N style test; linear source
-## goal is to see how it handles line-source (consisting of closely-spaced point sources)
-## it resolves the two source regions but fails to show their dimensions
+## goal is to see how it handles line sources (consisting of closely-spaced point sources)
+## Two small lines: it resolves the two source regions but fails to show their dimensions
+## One long line: it shows many point sources spaced haphazardly along the source region
 s_list = np.arange(-4, 4, 0.25)
 
 num_windows = 8 # the number of windows strongly affects the clean power ratio
 win_length_sec = 1
 freq_bin_width = 1
 Nt = num_windows * win_length_sec * 100
-sx = np.concatenate([np.arange(2, 3, 0.05), np.arange(-3, -2, 0.05)])
+#sx = np.concatenate([np.arange(2, 3, 0.05), np.arange(-3, -2, 0.05)])
+sx = np.arange(-3, 3, 0.05)
 stream = clean.make_synth_stream(Nt = Nt, sx = sx, amp = sx*0+1, sy = 0*sx, Nx = 4, Ny = 4, 
                                         fc = 6 + 0*sx, uncorrelatedNoiseAmp = 0) 
 result = clean.clean(stream, verbose = True, phi = 0.1, separate_freqs = 0, win_length_sec = win_length_sec, 
@@ -140,6 +142,7 @@ result = clean.clean(stream, verbose = True, phi = 0.1, separate_freqs = 0, win_
 plt.figure(6)                  
 plt.subplot(2,2,1)
 clean.plot_freq_slow_spec(result, 'xy', 'original')
+plt.plot(sx, 0*sx, 'b.') # true wave slownesses in blue
 plt.subplot(2,2,2)
 clean.plot_freq_slow_spec(result, 'xy')
 plt.subplot(2,2,3)
