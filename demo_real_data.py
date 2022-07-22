@@ -68,11 +68,11 @@ st = eq_stream.slice(t_trans+2, t2)
 #st.pop(4) # signals at index 4 are weirdly quiet
 #st.pop(6)
 s_list = np.arange(-4, 4, 0.25)
-result = clean.clean(st, verbose = True, phi = 0.05, separateFreqs = 0, win_length_sec = 0.5, 
+result = clean.clean(st, verbose = True, phi = 0.05, separate_freqs = 0, win_length_sec = 0.5, 
                               freq_bin_width = 1, freq_min = 1, freq_max = 25, 
                               sxList = s_list, syList = s_list, p_value = 0.0001)
-plt.close(23)
-plt.figure(23)
+plt.close(2)
+plt.figure(2)
 plt.subplot(2,2,1)
 clean.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,2)
@@ -144,7 +144,7 @@ while (t1 + loop_width) <= loop_end:
     st = eq_stream.slice(t1, t1 + loop_width)
     halftime = t1 + loop_width/2 - loop_start
     print('%f of %f' % (halftime, loop_end - loop_start))
-    result = clean.clean(st, verbose = False, phi = 0.2, separateFreqs = 0, win_length_sec = 1,
+    result = clean.clean(st, verbose = False, phi = 0.2, separate_freqs = 0, win_length_sec = 1,
                               freq_bin_width = 1, freq_min = 0, freq_max = 20, 
                               sxList = s_list, syList = s_list, prewhiten = False)
     t1 += loop_step

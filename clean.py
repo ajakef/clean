@@ -881,7 +881,7 @@ def _polar_transform(spec, sx_list, sy_list, az_start = 0, backazimuth = False):
             if backazimuth:
                 az = np.arctan2(-sx, -sy) * 180/np.pi
             else:
-                az = np.arctan2(-sx, -sy) * 180/np.pi
+                az = np.arctan2(sx, sy) * 180/np.pi
             r = np.sqrt(sx**2 + sy**2)
             m = np.argmin(np.abs(_az_dist(az, az_list)))
             n = np.argmin(np.abs(r_list - r))

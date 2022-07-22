@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from numpy import pi, sqrt, sin, cos, exp
 import obspy
 import importlib
-#import mtspec
 import clean
 
 try:
@@ -12,6 +11,15 @@ try:
     print('reloaded')
 except:
     pass
+
+try:
+    import mtspec
+except:
+    print('optional dependency mtspec not present, skipping multitaper tests')
+    run_multitaper = False
+else:
+    run_multitaper = True
+
 
 def approx_equal(x, y, p = 0.01):
     return np.abs(x-y)/x < p
@@ -37,8 +45,10 @@ assert approx_equal(power_time, power_freq), 'calc_fourier_window: Parseval\'s r
 ## smoothing with Welch averaging all give similar and presumably good results. A plain, 
 ## one-window Fourier transform, either with or without smoothing or tapering, should be avoided.
 
-st = clean.make_synth_stream(400, Nx = 4, Ny = 1, sx = 1, sy = 0, fl = [4], fh = [8], 
-                                    amp=[1], uncorrelatedNoiseAmp=0)
+freq_low = 4
+freq_high = 8
+st = clean.make_synth_stream(400, Nx = 4, Ny = 1, sx = 1, sy = 0, fl = [freq_low], fh = [freq_high], 
+                             amp=[1], uncorrelatedNoiseAmp=0)
 ## actual time lags should be 0.02 s (20 m, 1 s/km)
 plt.close(3)
 fig = plt.figure(3)
@@ -70,17 +80,26 @@ crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, win_length_sec = 
 splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
 splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs))
 
-## multitaper cross spectrum
-crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, taper = 'multitaper', taper_param=4)
-print(np.sum(crossSpec[0,0,:]) * np.diff(freqs)[0] / np.var(st[0].data))
-splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
-splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs + 1e-12))
-
+if run_multitaper:
+    ## multitaper cross spectrum
+    crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, taper = 'multitaper', taper_param=4)
+    print(np.sum(crossSpec[0,0,:]) * np.diff(freqs)[0] / np.var(st[0].data))
+    splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
+    splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs + 1e-12))
+    splt[0].legend(['plain', 'welch', 'smoothing', 'mix', 'multitaper'])
+else:
+    splt[0].legend(['plain', 'welch', 'smoothing', 'mix'])
+    
 
 splt[1].plot([0,50], [0.02,0.02], 'k--')
+splt[1].axvline(freq_low, color = 'k', linestyle = '--')
+splt[1].axvline(freq_high, color = 'k', linestyle = '--')
 splt[0].set_xlim([0,10])
+splt[0].set_ylabel('Cross-Spec Amp')
 splt[1].set_xlim([0,10])
-splt[0].legend(['plain', 'welch', 'smoothing', 'mix', 'multitaper'])
+splt[1].set_ylim([0,0.05])
+splt[1].set_xlabel('Frequency (Hz)')
+splt[1].set_ylabel('Time lag (s)')
 
 plt.tight_layout()
 #%% Power conservation: special case of correlated wavefield
@@ -116,8 +135,8 @@ assert clean.check_output_power(result), 'Power conservation, general case'
 ## slownesses are tested; however, it's not clear how this actual probability of false 
 ## positives could be calculated. 
 
-## This test appears to fail, but the false positive rate is only off by about a factor of 2.
-## Worth investigating but currently a low priority.
+## This test appears to fail, but the false positive rate is only off by about a factor of 3.
+## Worth investigating eventually but currently a low priority.
 
 N = 1000
 p_value = 0.05
@@ -125,7 +144,7 @@ detections = np.zeros(N)
 for i in range(N):
     stream = clean.make_synth_stream(400, sx = [0], sy = [0], amp = [0], uncorrelatedNoiseAmp=10) # x,y are built into stream
     result = clean.clean(stream, verbose = False, phi=0.1, sxList = [0], syList = [0], 
-                                  p_value = p_value, win_length_sec = 1, freq_max = 20)
+                                  p_value = p_value, win_length_sec = 1, freq_min = 4, freq_max = 20)
     detections[i] = np.sum(result['cleanSpec']) > 0
 
 ## check that actual false positives are within 50% of expected false positives
