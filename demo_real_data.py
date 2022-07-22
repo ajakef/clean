@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import obspy, scipy
+import obspy#, scipy
 import sys
 sys.path.append('/home/jake/Work/Aftershocks/lib/clean')
 import clean
@@ -41,7 +41,7 @@ st = st[3:5] + st[16:17] # huge triangle 0.0452 power ratio, severe aliasing
 plt.close(0)
 plt.figure(0)
 clean.plot_distances(st, 0) # plot the array (or sub-array) geometry
-
+#%%
 distances = clean.calc_station_pair_distance(eq_stream)
 
 result = clean.clean(st, verbose = True, phi = 0.01, separate_freqs = 0, win_length_sec = 0.5,
@@ -60,6 +60,8 @@ plt.subplot(2,2,4)
 clean.polar_freq_slow_spec(result, 'fa')
 
 plt.tight_layout()
+
+
 
 #%% Process secondary infrasound
 ## Aftershock secondary infrasound (seismic-to-acoustic conversion away from the array)

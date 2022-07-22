@@ -742,7 +742,7 @@ def calc_semblance(clean_output, type = 'original'):
 def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblance = True,
                         fRange = [0, np.Inf], sxRange = [-4, 4], 
                         syRange = [-4, 4], imageAdj = None, backazimuth = True,
-                        fig = None, ax = None):
+                        ax = None):
     """
     Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
     
@@ -758,10 +758,14 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
     syRange: lower and upper limits for y slowness axis
     imageAdj: optional function to change scaling of power
     backazimuth: if True, flip the sx and sy axes to show the wave's direction of origin
-    fig, ax: optional; if given, figure and axis to plot on. Both fig and ax must be provided; 
-         otherwise, a new figure/axis will be used.
+    ax: optional; if given, axis to plot on. If not provided, the current figure/axis will be used,
+         or if no axis is open, a new one will be created.
     
     """
+    if ax is None:
+        ax = plt.gca()
+    fig = ax.figure
+
     if type.lower() == 'clean':
         spec = clean_output['cleanSpec']
     elif type.lower() == 'original' or type.lower() == 'remaining':
@@ -773,8 +777,6 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
     else:
         raise "Invalid 'type' in plot_freq_slow_spec"
 
-    if (fig is None) or (ax is None):
-        fig, ax = plt.subplots()
     sx = clean_output['sx']
     sy = clean_output['sy']
     f = clean_output['freq']
@@ -820,7 +822,7 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
 def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean', 
                          fRange = [-np.Inf, np.Inf], azRange = [-np.Inf, np.Inf], 
                          shRange = [0, 4], imageAdj = None, backazimuth = True,
-                         fig = None, ax = None):
+                         ax = None):
     """
     Plot data from the 3-D frequency-slowness spectrum as a 2-D image.
     
@@ -836,10 +838,13 @@ def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean',
     syRange: lower and upper limits for y slowness axis
     imageAdj: optional function to change scaling of power
     backazimuth: if True, flip the sx and sy axes to show the wave's direction of origin
+    ax: optional; if given, axis to plot on. If not provided, the current figure/axis will be used,
+         or if no axis is open, a new one will be created.
     
     """
-    if (fig is None) or (ax is None):
-        fig, ax = plt.subplots()
+    if ax is None:
+        ax = plt.gca()
+    fig = ax.figure
 
     if type.lower() == 'clean':
         spec = clean_output['cleanSpec']
