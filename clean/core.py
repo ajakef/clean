@@ -16,7 +16,7 @@ from obspy.signal.util import next_pow_2 #, util_geo_km
 #from obspy.signal.array_analysis import *
 import obspy.signal.array_analysis
 
-from clean.utils import *
+from clean.utils import _polar_transform, get_stream_coordinates
 
 try: 
     import mtspec
@@ -249,7 +249,7 @@ def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, s
                 #if any(np.diag(cross_spec[:,:,i] - compToRemove[:,:,i]) < 0):
                 diags = np.diag(cross_spec[:,:,i] - compToRemove[:,:,i])
                 if np.mean(diags) < np.std(diags):# allow some negativity, but not much
-                    print('Dropping freq index %d due to negative power' %i) 
+                    if verbose: print('Dropping freq index %d due to negative power' %i) 
                     positive_freqs[i] = 0 
                     dropped_power[:,:,i] = cross_spec[:,:,i]
                     
@@ -318,10 +318,8 @@ def clean_loop(stream, loop_step = 1, loop_width=2, x = None, y = None, sxList =
     nt = int(1 + (loop_end - loop_start - loop_width) // loop_step)
     z = np.zeros(nt)
 
-    #clean_output = {'t':z, 'sx':z, 'sy':z, 'f':z, 'power':z, 'cleanRatio' : z}
     dirty_output = {'t':z, 'sx':z, 'sy':z, 'power':z}
     
-    #while (t1 + loop_width) <= loop_end:
     for i in range(nt):
         st = stream.slice(t1, t1 + loop_width)
         halftime = t1 + loop_width/2 - loop_start
@@ -353,6 +351,7 @@ def clean_loop(stream, loop_step = 1, loop_width=2, x = None, y = None, sxList =
     output['original_sh'] = np.sqrt(output['original_sx']**2+output['original_sy']**2)
     output['original_az'] = np.arctan2(output['original_sx'], output['original_sy']) * 180/np.pi
     output['clean_polar'], output['az'], output['sh'] = _polar_transform(output['clean'], sxList, syList)
+    output['clean_polar_back'], output['back_az'], output['sh'] = _polar_transform(output['clean'], sxList, syList, backazimuth = True)
 
     return output    
 #####################################################

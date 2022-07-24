@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd # needed for reading coords df as inv
 import obspy
 
+eps = 1e-12
+
 def get_stream_coordinates(x, y = None):
     if type(x) is obspy.Stream:
         try:
