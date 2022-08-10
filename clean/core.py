@@ -16,7 +16,7 @@ from obspy.signal.util import next_pow_2 #, util_geo_km
 #from obspy.signal.array_analysis import *
 import obspy.signal.array_analysis
 
-from clean.utils import _polar_transform, get_stream_coordinates
+from cleanbf.utils import _polar_transform, get_coordinates
 
 try: 
     import mtspec
@@ -30,9 +30,9 @@ def make_steering_vectors(stream, freqs, xSlowness, ySlowness = [0]):
     # plane wave steering vector dimensions are 
     # nf, nsx, nsy, nsta
     # exp(1j * 2 * pi * f * dt)
-    geometry_array = get_stream_coordinates(stream)
-    if isinstance(geometry_array, list):
-        geometry_array = np.array(geometry_array).transpose()
+    geometry_array = get_coordinates(stream)
+    if isinstance(geometry_array, list) or isinstance(geometry_array, pd.DataFrame):
+        geometry_array = np.array(geometry_array.loc[:,['x', 'y']])
     fs = stream[0].stats.sampling_rate
     #deltaf = freqs[1] - freqs[0]
 
@@ -50,7 +50,7 @@ def make_steering_vectors_local(stream, geometry_src, freqs, c = 0.340):
     # plane wave steering vector dimensions are 
     # nf, nsx, nsy, nsta
     # exp(1j * 2 * pi * f * dt)
-    geometry_array = get_stream_coordinates(stream)
+    geometry_array = get_coordinates(stream)
     if isinstance(geometry_array, list):
         geometry_array = np.array(geometry_array).transpose()
     fs = stream[0].stats.sampling_rate
@@ -211,7 +211,6 @@ def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, s
     while not done:
         count += 1
         ## calculate frequency-slowness spectrum
-        #P = np.abs(np.einsum('k,klmi,ijk,klmj,ij->klm', positive_freqs, wB.conj(), cross_spec, wB, cross_spec_mask)) # n_freq x n_slow x n_slow; absolute power over f, sx,sy
         P = calc_freq_slowness_spec(cross_spec, weights = wB, freq_to_use = positive_freqs, mask = cross_spec_mask)
         if separate_freqs == 1:  ## use this code to pick best slowness AND best frequency
             f_inds,imax,jmax= np.where(P == P.max()); f_inds = f_inds[:1]; imax=imax[0]; jmax=jmax[0]; #kmax=kmax[0]
@@ -437,7 +436,6 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
     ## calculate the steering vectors and weights
     if verbose: print('Calculating steering vectors and weights')
     if steering_vectors is None:
-        #steering_vectors = make_steering_vectors(staLoc, stream, freqList, sxList, syList)
         steering_vectors = make_steering_vectors(stream, freqList, sxList, syList)
 
     wB = calc_weights(steering_vectors)
@@ -547,7 +545,61 @@ def add_inv_coords(st, inv):
                 )
             tr.stats = obspy.core.Stats({**tr.stats, 'coordinates': loc})
     
+############
 
+######################
+def backproject(lon_grid_range, lat_grid_range, grid_spacing_deg, lon_station, lat_station, lon_eq, lat_eq, z_eq, ca_min, ca_max, cs_min, cs_max, baz_arrival, time_arrival, power_arrival = None, az_bin_width = 10):
+    eps = 1e-6
+    if power_arrival is None:
+        power_arrival = np.ones(len(time_arrival))
+
+    ## Make map matrix
+    lon_nodes = np.arange(lon_grid_range[0], lon_grid_range[1], grid_spacing_deg)
+    lat_nodes = np.arange(lat_grid_range[0], lat_grid_range[1], grid_spacing_deg)
+    #[lon_grid, lat_grid] = np.meshgrid(lon_vector, lat_vector)
+
+    ## For each node, calculate max time and min time, and max baz and min baz.
+    x_hat_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    y_hat_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    t_max_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    t_min_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    for i, lon in enumerate(lon_nodes):
+        for j, lat in enumerate(lat_nodes):
+            [ac_dist, ac_az, ac_baz] = obspy.geodetics.gps2dist_azimuth(lat1=lat, lon1=lon, lat2=lat_station, lon2=lon_station)
+            [seis_dist, seis_az, seis_baz] = obspy.geodetics.gps2dist_azimuth(lat1=lat, lon1=lon, lat2=lat_eq, lon2=lon_eq)
+            x_hat_nodes[i,j] = np.sin(ac_baz * np.pi/180)
+            y_hat_nodes[i,j] = np.cos(ac_baz * np.pi/180)
+            t_max_nodes[i,j] = ac_dist/ca_min + np.sqrt(seis_dist**2 + z_eq**2)/cs_min
+            t_min_nodes[i,j] = ac_dist/ca_max + np.sqrt(seis_dist**2 + z_eq**2)/cs_max
+    ## make cells, with max/min values for boundary nodes
+    x_hat_min_cells = np.zeros((len(lon_nodes)-1, len(lat_nodes)-1))
+    x_hat_max_cells = np.zeros((len(lon_nodes)-1, len(lat_nodes)-1))
+    y_hat_min_cells = np.zeros((len(lon_nodes)-1, len(lat_nodes)-1))
+    y_hat_max_cells = np.zeros((len(lon_nodes)-1, len(lat_nodes)-1))
+    t_max_cells = np.zeros((len(lon_nodes)-1, len(lat_nodes)-1))
+    t_min_cells = np.zeros((len(lon_nodes)-1, len(lat_nodes)-1))
+    for i in np.arange(len(lon_nodes) - 1):
+        for j in np.arange(len(lat_nodes) - 1):
+            x_hat_min_cells[i,j] = np.min(x_hat_nodes[i:(i+2), j:(j+2)])
+            x_hat_max_cells[i,j] = np.max(x_hat_nodes[i:(i+2), j:(j+2)])
+            y_hat_min_cells[i,j] = np.min(y_hat_nodes[i:(i+2), j:(j+2)])
+            y_hat_max_cells[i,j] = np.max(y_hat_nodes[i:(i+2), j:(j+2)])
+            t_min_cells[i,j] = np.min(t_min_nodes[i:(i+2), j:(j+2)])
+            t_max_cells[i,j] = np.min(t_max_nodes[i:(i+2), j:(j+2)])
+    ## For each detection,
+    output_cells = 0 * t_max_cells
+    bin = np.linspace(-0.5 * az_bin_width, 0.5 * az_bin_width + eps, 10)
+    for time, baz, power in zip(time_arrival, baz_arrival, power_arrival):
+        #### identify and mark cells that contain baz and t
+        x_hat_min = np.min(np.sin((baz + bin) * np.pi/180))
+        x_hat_max = np.max(np.sin((baz + bin) * np.pi/180))
+        y_hat_min = np.min(np.cos((baz + bin) * np.pi/180))
+        y_hat_max = np.max(np.cos((baz + bin) * np.pi/180))
+        output_cells += power * ( (time >= t_min_cells) & (time <= t_max_cells) &
+                                  (x_hat_max >= (x_hat_min_cells-eps)) & (x_hat_min <= (x_hat_max_cells+eps)) &
+                                  (y_hat_max >= (y_hat_min_cells-eps)) & (y_hat_min <= (y_hat_max_cells+eps)) )
+
+    return output_cells, lon_nodes, lat_nodes
 
 
 

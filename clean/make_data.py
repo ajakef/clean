@@ -5,11 +5,11 @@ from numpy import pi, sqrt, sin, cos, exp
 import obspy, scipy, importlib, sys
 sys.path.append('/home/jake/Work/Aftershocks/lib/')
 try:
-    importlib.reload(clean)
+    importlib.reload(cleanbf)
     importlib.reload(ProcessEvent)
     print('reloaded')
 except:
-    import clean, ProcessEvent
+    import cleanbf, ProcessEvent
 
 
 

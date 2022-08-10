@@ -1,3 +1,3 @@
-from clean.core import *
-from clean.plots import *
-from clean.synthetic import *
+from cleanbf.core import *
+from cleanbf.plots import *
+from cleanbf.synthetic import *

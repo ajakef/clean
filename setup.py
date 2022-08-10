@@ -24,14 +24,14 @@ DESCRIPTION = 'A set of functions for processing Gem datalogger files.'
 LONG_DESCRIPTION = """
 """
 
-DISTNAME = 'clean'
+DISTNAME = 'cleanbf'
 LICENSE = 'GPL-3.0'
 AUTHOR = 'Jake Anderson'
 MAINTAINER_EMAIL = 'ajakef@gmail.com'
 URL = 'https://github.com/ajakef/clean'
 
 
-VERSION = '0.1'
+VERSION = '0.2'
 
 ## Dependency notes:
 # pandas: >= 1.3 
@@ -42,12 +42,11 @@ VERSION = '0.1'
 ## example range: pandas>=1.3.0,<1.4.0
 ## example exact: numpy==1.21
 INSTALL_REQUIRES = [
-    #'setuptools>=18.0', # 18.0 needed to handle cython in installation
     'obspy>=1.2.2', 
     'numpy>=1.22', 
     'pandas>=1.3.0', 
-    'scipy>=1.3.0', # May 2019
-    'matplotlib>=3.2.0', # March 2020
+    'scipy>=1.3.0', 
+    'matplotlib>=3.2.0', 
 ]
 
 TESTS_REQUIRE = ['pytest']
@@ -86,7 +85,7 @@ setuptools_kwargs = {
     'include_package_data': True,
 }
 
-PACKAGES = ['clean']
+PACKAGES = ['cleanbf']
 
 setup(name=DISTNAME,
       setup_requires=[],

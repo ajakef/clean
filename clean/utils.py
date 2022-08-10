@@ -6,18 +6,62 @@ import obspy
 
 eps = 1e-12
 
-def get_stream_coordinates(x, y = None):
+def get_coordinates(x, y = None):
+    """
+    Finds sensor coordinates from various inputs
+    
+    Parameters:
+    -----------
+    x: either an array of x coordinates, obspy.Stream with trace.stats['coords'], or obspy.Inventory
+    y: either an array of y coordinates (if x is an array of x coordinates), or None
+
+    Returns:
+    --------
+    pandas.DataFrame with x, y, z, network, station, location fields. x and y are in km, z is in m.
+    """
     if type(x) is obspy.Stream:
         try:
-            staLoc = obspy.signal.array_analysis.get_geometry(x) # https://docs.obspy.org/packages/autogen/obspy.signal.array_analysis.get_geometry.html
+            ## Stream coordinates can either be lon/lat/z or x/y/z. x and y are km, z is m.
+            ## This line will work if x has lon/lat/z coordinates, and will raise an exception
+            ## if x has x/y/z coordinates.
+            geometry = obspy.signal.array_analysis.get_geometry(x, coordsys = 'lonlat',
+                                                              return_center = True)
+            coords = {'x':geometry[:-1,0],
+                      'y':geometry[:-1,1],
+                      'z':geometry[:-1,2] + geometry[-1,2]} # last row in 'geometry' is coordinates of reference point
+            # https://docs.obspy.org/packages/autogen/obspy.signal.array_analysis.get_geometry.html
         except:
-            #staLoc = get_geometry(x, 'xy') # re-centers array (bad)
-            xx = np.array([tr.stats.coordinates['x'] for tr in x])
-            yy = np.array([tr.stats.coordinates['y'] for tr in x])
-            staLoc = np.array([xx,yy]).transpose()
+            ## If we're here, then x is a stream with x/y/z coordinates. Extract them directly.
+            ## We don't want to use get_geometry because it will pick a new center and shift the
+            ## coordinates accordingly.
+            coords = {'x': np.array([tr.stats.coordinates['x'] for tr in x]),
+                      'y': np.array([tr.stats.coordinates['y'] for tr in x]),
+                      'z': np.array([tr.stats.coordinates['elevation'] for tr in x])}
+
+        coords['network'] = [tr.stats.network for tr in x]
+        coords['station'] = [tr.stats.station for tr in x]
+        coords['location'] = [tr.stats.location for tr in x]
+    elif type(x) is obspy.Inventory:
+        contents = x.get_contents()['channels']
+        lats = [x.get_coordinates(s)['latitude'] for s in contents]
+        lons = [x.get_coordinates(s)['longitude'] for s in contents]
+        zz = [x.get_coordinates(s)['elevation'] for s in contents]
+        xx = np.zeros(len(lats))
+        yy = np.zeros(len(lats))
+        for i, (lat, lon) in enumerate(zip(lats, lons)):
+            xx[i], yy[i] = obspy.signal.util.util_geo_km(np.mean(lons), np.mean(lats), lon, lat)
+        coords = {'x': xx, 'y': yy, 'z': zz,
+                  'network': [string.split('.')[0] for string in contents],
+                  'station': [string.split('.')[1] for string in contents],
+                  'location': [string.split('.')[2] for string in contents]}
     else:
-        staLoc = np.array([x,y]).transpose()
-    return staLoc
+        coords = {'x':x,
+                  'y':y,
+                  'z':None,
+                  'network':None,
+                  'station':None,
+                  'location':None}
+    return pd.DataFrame(coords)
 
 def _az_dist(a, b):
     """

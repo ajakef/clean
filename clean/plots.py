@@ -1,14 +1,13 @@
 import numpy as np
-#import scipy.signal
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import pandas as pd # needed for reading coords df as inv
 import obspy
-from clean.utils import *
+from cleanbf.utils import *
 
 eps = 1e-12
 
-## white-yellow-orange-red
+## white-yellow-orange-red colormap
 wyor = LinearSegmentedColormap('wyor', {'red': [[0, 1, 1], 
                                                 [1, 1, 1]],
                                         'green': [[0, 1, 1],
@@ -196,7 +195,7 @@ def _comp_to_label(comp, backazimuth):
         return None
  
 def plot_distances(st, limit, ha = 'center', va = 'bottom'):
-    coords = get_stream_coordinates(st)
+    coords = get_coordinates(st)
     distance = calc_station_pair_distance(st)
     plt.plot(coords[:,0], coords[:,1], 'ko')
     nsta = coords.shape[0]
@@ -211,12 +210,12 @@ def plot_distances(st, limit, ha = 'center', va = 'bottom'):
 
 
 def calc_station_pair_distance(x, y = None):
-    staLoc = get_stream_coordinates(x, y)
-    nsta = staLoc.shape[0]
+    coords = get_coordinates(x, y)
+    nsta = coords.shape[0]
     distance = np.zeros([nsta, nsta])
     for i in range(nsta):
         for j in range(nsta):
-            distance[i,j] = np.sqrt((staLoc[i,0] - staLoc[j,0])**2 + (staLoc[i,1] - staLoc[j,1])**2)
+            distance[i,j] = np.sqrt((coords[i,0] - coords[j,0])**2 + (coords[i,1] - coords[j,1])**2)
 
     return distance
 
@@ -245,3 +244,6 @@ def image(Z, x = None, y = None, aspect = 'equal', zmin = None, zmax = None, ax 
         ax.hlines(0, x[0], x[-1], 'k', linewidth=0.5)
         ax.vlines(0, y[0], y[-1], 'k', linewidth=0.5)
     return im
+
+
+
