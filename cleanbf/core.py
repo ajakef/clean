@@ -1,27 +1,21 @@
-#from __future__ import (absolute_import, division, print_function,
-#                        unicode_literals)
-#from future.builtins import *  # NOQA
-
-#import math
-#import warnings
-
 import numpy as np
 import scipy.signal
 import matplotlib.pyplot as plt
 import pandas as pd # needed for reading coords df as inv
 import obspy
-#from obspy.signal.headers import clibsignal
 from obspy.signal.invsim import cosine_taper
-from obspy.signal.util import next_pow_2 #, util_geo_km
-#from obspy.signal.array_analysis import *
+from obspy.signal.util import next_pow_2
 import obspy.signal.array_analysis
 
 from cleanbf.utils import _polar_transform, get_coordinates
 
-try: 
+try:
+    # mtspec can be used to calculate spectra and cross-spectra using multitaper method,
+    # but it's still experimental and not recommended.
     import mtspec
 except:
-    print("Library mtspec is not available, meaning that multitaper spectra are not an option")
+    pass
+    #print("Library mtspec is not available, meaning that multitaper spectra are not an option")
 
 eps = 1e-12
 
