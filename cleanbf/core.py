@@ -10,13 +10,13 @@ import obspy.signal.array_analysis
 from cleanbf.utils import _polar_transform, get_coordinates
 from cleanbf.plots import image
 
-try:
-    # mtspec can be used to calculate spectra and cross-spectra using multitaper method,
-    # but it's still experimental and not recommended.
-    import mtspec
-except:
-    pass
-    #print("Library mtspec is not available, meaning that multitaper spectra are not an option")
+#try:
+#    # mtspec can be used to calculate spectra and cross-spectra using multitaper method,
+#    # but it's still experimental and not recommended.
+#    import mtspec
+#except:
+#    pass
+#    #print("Library mtspec is not available, meaning that multitaper spectra are not an option")
 
 eps = 1e-12
 
@@ -72,8 +72,9 @@ def calc_fourier_window(stream, offset=0, taper = None, taper_param = 4, raw=Fal
     ft = np.empty((len(stream), nf), dtype=np.complex128)
     for i, tr in enumerate(stream):
         dat = tr.data[int(spoint[i] + offset):int(spoint[i] + offset + nsamp)]
-        if (type(taper) is str) and (taper.lower() == 'multitaper'):
-            ft[i, :] = mtspec(dat, stream[0].stats.delta, time_bandwidth = taper_param, nfft=nfft)[nlow:nlow + nf]
+        if False:#(type(taper) is str) and (taper.lower() == 'multitaper'):
+            #ft[i, :] = mtspec(dat, stream[0].stats.delta, time_bandwidth = taper_param, nfft=nfft)[nlow:nlow + nf]
+            pass
         else:
             if not raw:
                 dat = scipy.signal.detrend(dat) * taper
@@ -114,27 +115,28 @@ def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False
         def criterion_function(st): return np.ones([len(st), len(st)])
     cross_spec = 0
     FT = 0 
-    if (taper is not None) and (taper.lower() == 'multitaper'):
-        num_windows = 1
-        #n_freq = int(2**np.ceil(np.log2(len(stream[0].data)))/2)
-        n_freq = int(len(stream[0].data)/2)
-        cross_spec = np.zeros([len(stream), len(stream), n_freq], dtype = 'complex')
-        for i in range(len(stream)):
-            for j in range(i):
-                mt_output = mtspec.mt_coherence(stream[0].stats.delta, stream[i].data, 
-                                                stream[j].data, tbp = taper_param, kspec = 5, 
-                                                nf = n_freq, p = 0.95, cohe = True, phase = True, 
-                                                speci = True, specj = True, freq = True)
-                df = np.diff(mt_output['freq'])[0]
-                ## Hack to enforce Parseval's relation. mtspec doesn't do it.
-                scale_i = np.var(stream[i])/(np.sum(mt_output['speci']) * df)
-                scale_j = np.var(stream[j])/(np.sum(mt_output['specj']) * df)
-                cross_spec[i,i,:] = mt_output['speci'] * scale_i
-                cross_spec[j,j,:] = mt_output['specj'] * scale_j
-                cross_spec[i,j,:] = (mt_output['speci'] * mt_output['specj'] * scale_i * scale_j * 
-                                    mt_output['cohe'])**0.5 * np.exp(1j * np.pi/180 * mt_output['phase'])
-                cross_spec[j,i,:] = cross_spec[i,j].conj()
-        freqs = mt_output['freq']                
+    if False:#(taper is not None) and (taper.lower() == 'multitaper'):
+        #num_windows = 1
+        ##n_freq = int(2**np.ceil(np.log2(len(stream[0].data)))/2)
+        #n_freq = int(len(stream[0].data)/2)
+        #cross_spec = np.zeros([len(stream), len(stream), n_freq], dtype = 'complex')
+        #for i in range(len(stream)):
+        #    for j in range(i):
+        #        mt_output = mtspec.mt_coherence(stream[0].stats.delta, stream[i].data, 
+        #                                        stream[j].data, tbp = taper_param, kspec = 5, 
+        #                                        nf = n_freq, p = 0.95, cohe = True, phase = True, 
+        #                                        speci = True, specj = True, freq = True)
+        #        df = np.diff(mt_output['freq'])[0]
+        #        ## Hack to enforce Parseval's relation. mtspec doesn't do it.
+        #        scale_i = np.var(stream[i])/(np.sum(mt_output['speci']) * df)
+        #        scale_j = np.var(stream[j])/(np.sum(mt_output['specj']) * df)
+        #        cross_spec[i,i,:] = mt_output['speci'] * scale_i
+        #        cross_spec[j,j,:] = mt_output['specj'] * scale_j
+        #        cross_spec[i,j,:] = (mt_output['speci'] * mt_output['specj'] * scale_i * scale_j * 
+        #                            mt_output['cohe'])**0.5 * np.exp(1j * np.pi/180 * mt_output['phase'])
+        #        cross_spec[j,i,:] = cross_spec[i,j].conj()
+        #freqs = mt_output['freq']
+        pass
     else: # use default Tukey taper
         win_length_samp = int(np.round(win_length_sec / stream[0].stats.delta))
         data_length_samp = len(stream[0].data)

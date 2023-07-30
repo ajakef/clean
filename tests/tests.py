@@ -4,22 +4,24 @@ import matplotlib.pyplot as plt
 from numpy import pi, sqrt, sin, cos, exp
 import obspy
 import importlib
-import clean
+import cleanbf
 
 try:
-    importlib.reload(clean)
+    importlib.reload(cleanbf)
     print('reloaded')
 except:
     pass
 
-try:
-    import mtspec
-except:
-    print('optional dependency mtspec not present, skipping multitaper tests')
-    run_multitaper = False
-else:
-    run_multitaper = True
 
+## leave out multitaper stuff; mtspec causes trouble, the multitaper code probably doesn't work well, and the benefits are probably negligible.
+#try:
+#    import mtspec
+#except:
+#    print('optional dependency mtspec not present, skipping multitaper tests')
+#    run_multitaper = False
+#else:
+#    run_multitaper = True
+run_multitaper = False
 
 def approx_equal(x, y, p = 0.01):
     return np.abs(x-y)/x < p
