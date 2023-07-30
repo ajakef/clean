@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import obspy, scipy, importlib
 import cleanbf
 try:
-    importlib.reload(clean)
+    importlib.reload(cleanbf)
     print('reloaded')
 except:
     pass

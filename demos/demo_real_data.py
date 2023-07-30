@@ -5,7 +5,7 @@ import sys, os
 import cleanbf
 try:
     import importlib
-    importlib.reload(clean)
+    importlib.reload(cleanbf)
     print('reloaded')
 except:
     pass

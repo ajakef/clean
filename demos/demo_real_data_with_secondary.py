@@ -6,7 +6,7 @@ import sys
 #sys.path.append('/home/jake/Work/Aftershocks/lib/clean')
 try:
     import importlib
-    importlib.reload(clean)
+    importlib.reload(cleanbf)
     print('reloaded')
 except:
     pass
