@@ -27,9 +27,9 @@ def approx_equal(x, y, p = 0.01):
     return np.abs(x-y)/x < p
 
 #%% calc_fourier_window
-st = clean.make_synth_stream(Nx = 2, Ny = 1, sx = 1, sy = 0, fl = [3], fh = [6], uncorrelatedNoiseAmp=0.5)
+st = cleanbf.make_synth_stream(Nx = 2, Ny = 1, sx = 1, sy = 0, fl = [3], fh = [6], uncorrelatedNoiseAmp=0.5)
 
-FT, freqs = clean.calc_fourier_window(st, raw = True)
+FT, freqs = cleanbf.calc_fourier_window(st, raw = True)
 plt.plot(np.abs(freqs), np.abs(FT[0,:])**2)
 
 ## Parseval's relation check for amplitude spectrum
@@ -49,7 +49,7 @@ assert approx_equal(power_time, power_freq), 'calc_fourier_window: Parseval\'s r
 
 freq_low = 4
 freq_high = 8
-st = clean.make_synth_stream(400, Nx = 4, Ny = 1, sx = 1, sy = 0, fl = [freq_low], fh = [freq_high], 
+st = cleanbf.make_synth_stream(400, Nx = 4, Ny = 1, sx = 1, sy = 0, fl = [freq_low], fh = [freq_high], 
                              amp=[1], uncorrelatedNoiseAmp=0)
 ## actual time lags should be 0.02 s (20 m, 1 s/km)
 plt.close(3)
@@ -60,31 +60,31 @@ splt[1].set_title('Time Lag Spectrum (dashed line is theoretical)')
 print(np.var(st[0].data))
 
 ## compare multiple single-taper cross-spectra
-crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, win_length_sec = 4, 
+crossSpec, FT, freqs, dfN, dfD = cleanbf.calc_cross_spectrum(st, win_length_sec = 4, 
                                                            freq_bin_width = 1, raw = True)
 print(np.sum(FT[0,:]**2*np.diff(freqs)[0])/np.var(st[0].data))
 print(np.sum(crossSpec[0,0,:]) * np.diff(freqs)[0] / np.var(st[0].data))
 splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
 splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs))
 
-crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, win_length_sec = 1, 
+crossSpec, FT, freqs, dfN, dfD = cleanbf.calc_cross_spectrum(st, win_length_sec = 1, 
                                                            freq_bin_width = 1)
 splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
 splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs))
 
-crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, win_length_sec = 1, 
+crossSpec, FT, freqs, dfN, dfD = cleanbf.calc_cross_spectrum(st, win_length_sec = 1, 
                                                            freq_bin_width = 4)
 splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
 splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs))
 
-crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, win_length_sec = 2, 
+crossSpec, FT, freqs, dfN, dfD = cleanbf.calc_cross_spectrum(st, win_length_sec = 2, 
                                                            freq_bin_width = 2)
 splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
 splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs))
 
 if run_multitaper:
     ## multitaper cross spectrum
-    crossSpec, FT, freqs, dfN, dfD = clean.calc_cross_spectrum(st, taper = 'multitaper', taper_param=4)
+    crossSpec, FT, freqs, dfN, dfD = cleanbf.calc_cross_spectrum(st, taper = 'multitaper', taper_param=4)
     print(np.sum(crossSpec[0,0,:]) * np.diff(freqs)[0] / np.var(st[0].data))
     splt[0].plot(np.abs(freqs), np.abs(crossSpec[0,1,:]))
     splt[1].plot(np.abs(freqs), np.angle(crossSpec[0,1,:])/(2*np.pi*freqs + 1e-12))
@@ -109,8 +109,8 @@ plt.tight_layout()
 ## as the input cross-spectrum.
 
 ## Simple test with defaults
-stream = clean.make_synth_stream() # x,y are built into stream
-result = clean.clean(stream, verbose = True, phi=0.2, win_length_sec=1)
+stream = cleanbf.make_synth_stream() # x,y are built into stream
+result = cleanbf.clean(stream, verbose = True, phi=0.2, win_length_sec=1)
 
 ## power considerations:
 original_power = np.einsum('iij ->', result['originalCrossSpec']) # total power in uncleaned cross spectrum
@@ -119,17 +119,17 @@ print('')
 print('Clean power/original power ratio')
 print(np.real(clean_power / original_power)) # this is equal to the remaining power ratio printed at the end of clean
 assert approx_equal(clean_power, original_power, 0.01), 'Power conservation, correlated wavefield: clean power != total power'
-assert clean.check_output_power(result), 'Power conservation, correlated wavefield: power not conserved'
+assert cleanbf.check_output_power(result), 'Power conservation, correlated wavefield: power not conserved'
 
 #%% Power Conservation: general case
 ## The sum of clean power and remaining power (noise) should always equal the original power. This 
 ## test includes both correlated signal and noise, so the clean spectrum will not be equal in power
 ## to the input, but the clean + remaining power will be.
-stream = clean.make_synth_stream(Nt = 800, sx = [1, -2], sy = [2, 0], amp = [1,1],
+stream = cleanbf.make_synth_stream(Nt = 800, sx = [1, -2], sy = [2, 0], amp = [1,1],
                                         Nx = 3, Ny = 1, fc = [6, 6], uncorrelatedNoiseAmp = 2) 
-result = clean.clean(stream, phi = 0.2, win_length_sec = 1)
+result = cleanbf.clean(stream, phi = 0.2, win_length_sec = 1)
 print('Power conservation ratio:')
-assert clean.check_output_power(result), 'Power conservation, general case'
+assert cleanbf.check_output_power(result), 'Power conservation, general case'
 #%% p-value test
 ## When given pure uncorrelated noise and only one slowness to search, the probability
 ## of detecting something (a false positive, since this is pure noise should be equal to the 
@@ -146,8 +146,8 @@ N = 1000
 p_value = 0.05
 detections = np.zeros(N)
 for i in range(N):
-    stream = clean.make_synth_stream(400, sx = [0], sy = [0], amp = [0], uncorrelatedNoiseAmp=10) # x,y are built into stream
-    result = clean.clean(stream, verbose = False, phi=0.1, sxList = [0], syList = [0], 
+    stream = cleanbf.make_synth_stream(400, sx = [0], sy = [0], amp = [0], uncorrelatedNoiseAmp=10) # x,y are built into stream
+    result = cleanbf.clean(stream, verbose = False, phi=0.1, sxList = [0], syList = [0], 
                                   p_value = p_value, win_length_sec = 1, freq_min = 4, freq_max = 20)
     detections[i] = np.sum(result['cleanSpec']) > 0
 
