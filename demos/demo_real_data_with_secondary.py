@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import obspy, scipy
-import clean
+import cleanbf
 import sys
 #sys.path.append('/home/jake/Work/Aftershocks/lib/clean')
 try:
@@ -18,7 +18,7 @@ except:
 eq_stream = obspy.read('data/aftershock.mseed')
 eq_stream.filter('highpass', freq=2)
 inv = obspy.read_inventory('data/XP_PARK_inventory.xml') # includes coordinates
-clean.add_inv_coords(eq_stream, inv) # store the coordinates in the stream
+cleanbf.add_inv_coords(eq_stream, inv) # store the coordinates in the stream
 
 ## define significant times in the data
 t1 = eq_stream.traces[0].stats.starttime # start of trace
@@ -35,20 +35,20 @@ s_list = np.arange(-4, 4, 0.25)
 
 st = eq_stream.slice(t_trans - 4, t_trans-0.2)
 
-result = clean.clean(st, verbose = True, phi = 0.01, separate_freqs = 0, win_length_sec = 0.5,
+result = cleanbf.clean(st, verbose = True, phi = 0.01, separate_freqs = 0, win_length_sec = 0.5,
                               freq_bin_width = 1, freq_min = 0, freq_max = 20, 
                               sxList = s_list, syList = s_list, prewhiten = False)
 
 plt.close(1)
 plt.figure(1)
 plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy', 'original')
+cleanbf.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,2)
-clean.plot_freq_slow_spec(result, 'xy')
+cleanbf.plot_freq_slow_spec(result, 'xy')
 plt.subplot(2,2,3)
-clean.polar_freq_slow_spec(result, 'fh')
+cleanbf.polar_freq_slow_spec(result, 'fh')
 plt.subplot(2,2,4)
-clean.polar_freq_slow_spec(result, 'fa')
+cleanbf.polar_freq_slow_spec(result, 'fa')
 
 plt.tight_layout()
 
@@ -61,19 +61,19 @@ st = eq_stream.slice(t_trans+2, t2)
 #st.pop(4) # signals at index 4 are weirdly quiet
 #st.pop(6)
 s_list = np.arange(-4, 4, 0.25)
-result = clean.clean(st, verbose = True, phi = 0.05, separate_freqs = 0, win_length_sec = 0.5, 
+result = cleanbf.clean(st, verbose = True, phi = 0.05, separate_freqs = 0, win_length_sec = 0.5, 
                               freq_bin_width = 1, freq_min = 1, freq_max = 25, 
                               sxList = s_list, syList = s_list, p_value = 0.0001)
 plt.close(23)
 plt.figure(23)
 plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy', 'original')
+cleanbf.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,2)
-clean.plot_freq_slow_spec(result, 'xy')
+cleanbf.plot_freq_slow_spec(result, 'xy')
 plt.subplot(2,2,3)
-clean.polar_freq_slow_spec(result, 'fh')
+cleanbf.polar_freq_slow_spec(result, 'fh')
 plt.subplot(2,2,4)
-clean.polar_freq_slow_spec(result, 'fa', 'clean')
+cleanbf.polar_freq_slow_spec(result, 'fa', 'clean')
 
 plt.tight_layout()
 
@@ -85,40 +85,40 @@ plt.tight_layout()
 st = eq_stream.slice(t_trans-20, t_trans-10)
 
 s_list = np.arange(-4, 4, 0.25)
-result = clean.clean(st, verbose = True, phi = 0.2, win_length_sec=1, 
+result = cleanbf.clean(st, verbose = True, phi = 0.2, win_length_sec=1, 
                               freq_bin_width = 1, freq_min = 1, freq_max = 25, 
                               sxList = s_list, syList = s_list, prewhiten = False)
 plt.figure(3)
 plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy', 'original')
+cleanbf.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,2)
-clean.plot_freq_slow_spec(result, 'xy')
+cleanbf.plot_freq_slow_spec(result, 'xy')
 plt.subplot(2,2,3)
-clean.polar_freq_slow_spec(result, 'fh')
+cleanbf.polar_freq_slow_spec(result, 'fh')
 plt.subplot(2,2,4)
-clean.polar_freq_slow_spec(result, 'fa')
+cleanbf.polar_freq_slow_spec(result, 'fa')
 plt.tight_layout()
 
 #%% microbarom detection
 st = obspy.read('data/noise.mseed')
 st.filter('bandpass', freqmin=0.15, freqmax = 1)
 inv = obspy.read_inventory('data/XP_PARK_inventory.xml') # includes coordinates
-clean.add_inv_coords(st, inv) # store the coordinates in the stream
+cleanbf.add_inv_coords(st, inv) # store the coordinates in the stream
 
 ## define slowness grid to search
 s_list = np.arange(-4, 4, 0.25)
-result = clean.clean(st, phi = 0.2, win_length_sec = 180, 
+result = cleanbf.clean(st, phi = 0.2, win_length_sec = 180, 
                      freq_bin_width = 1, freq_min = 0, freq_max = 2, 
                      sxList = s_list, syList = s_list, prewhiten = False)
 plt.figure(4)
 plt.subplot(2,2,1)
-clean.plot_freq_slow_spec(result, 'xy', 'original')
+cleanbf.plot_freq_slow_spec(result, 'xy', 'original')
 plt.subplot(2,2,2)
-clean.plot_freq_slow_spec(result, 'xy')
+cleanbf.plot_freq_slow_spec(result, 'xy')
 plt.subplot(2,2,3)
-clean.polar_freq_slow_spec(result, 'fh')
+cleanbf.polar_freq_slow_spec(result, 'fh')
 plt.subplot(2,2,4)
-clean.polar_freq_slow_spec(result, 'fa')
+cleanbf.polar_freq_slow_spec(result, 'fa')
 plt.tight_layout()
 
 
@@ -137,7 +137,7 @@ while (t1 + loop_width) <= loop_end:
     st = eq_stream.slice(t1, t1 + loop_width)
     halftime = t1 + loop_width/2 - loop_start
     print('%f of %f' % (halftime, loop_end - loop_start))
-    result = clean.clean(st, verbose = False, phi = 0.2, separate_freqs = 0, win_length_sec = 1,
+    result = cleanbf.clean(st, verbose = False, phi = 0.2, separate_freqs = 0, win_length_sec = 1,
                               freq_bin_width = 1, freq_min = 0, freq_max = 20, 
                               sxList = s_list, syList = s_list, prewhiten = False)
     t1 += loop_step

@@ -8,6 +8,7 @@ from obspy.signal.util import next_pow_2
 import obspy.signal.array_analysis
 
 from cleanbf.utils import _polar_transform, get_coordinates
+from cleanbf.plots import image
 
 try:
     # mtspec can be used to calculate spectra and cross-spectra using multitaper method,
