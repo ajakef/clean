@@ -83,7 +83,7 @@ setuptools_kwargs = {
     #'zip_safe': False,
     #'scripts': [],
     #'include_package_data': True,
-    'package_data':{'cleanbf':['data/*']}
+    'package_data':{'cleanbf':['cleanbf/data/*', 'demos/*']}
 }
 
 PACKAGES = ['cleanbf']
