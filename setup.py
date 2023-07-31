@@ -14,13 +14,13 @@ MIN_PYTHON_VERSION = (3, 7)
 
 # Fail fast if the user is on an unsupported version of python.
 if sys.version_info < MIN_PYTHON_VERSION:
-    msg = ("gemlog requires python version >= {}".format(MIN_PYTHON_VERSION) +
+    msg = ("cleanbf requires python version >= {}".format(MIN_PYTHON_VERSION) +
            " you are using python version {}".format(sys.version_info))
     print(msg, file=sys.stderr)
     sys.exit(1)
 
 
-DESCRIPTION = 'A set of functions for processing Gem datalogger files.'
+DESCRIPTION = 'A set of functions for running CLEAN beamforming.'
 LONG_DESCRIPTION = """
 """
 
@@ -80,9 +80,10 @@ ENTRY_POINTS = {
 }
 
 setuptools_kwargs = {
-    'zip_safe': False,
-    'scripts': [],
-    'include_package_data': True,
+    #'zip_safe': False,
+    #'scripts': [],
+    #'include_package_data': True,
+    'package_data':{'cleanbf':['data/*']}
 }
 
 PACKAGES = ['cleanbf']

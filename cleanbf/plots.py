@@ -4,6 +4,7 @@ from matplotlib.colors import LinearSegmentedColormap
 import pandas as pd # needed for reading coords df as inv
 import obspy
 from cleanbf.utils import *
+from cleanbf.utils import _polar_transform
 
 eps = 1e-12
 
@@ -212,14 +213,14 @@ def _comp_to_label(comp, backazimuth):
 def plot_distances(st, limit, ha = 'center', va = 'bottom'):
     coords = get_coordinates(st)
     distance = calc_station_pair_distance(st)
-    plt.plot(coords[:,0], coords[:,1], 'ko')
+    plt.plot(coords.x, coords.y, 'ko')
     nsta = coords.shape[0]
     for i in range(nsta):
         for j in range(i):
             if distance[i,j] < limit:
-                plt.plot([coords[i,0], coords[j,0]], [coords[i,1], coords[j,1]], 'r-')
+                plt.plot([coords.x[i], coords.x[j]], [coords.y[i], coords.y[j]], 'r-')
     for i in range(nsta):
-        plt.text(coords[i,0], coords[i,1], st[i].stats.station + '.' + st[i].stats.location, va = va, ha = ha)
+        plt.text(coords.x[i], coords.y[i], st[i].stats.station + '.' + st[i].stats.location, va = va, ha = ha)
 
     plt.axis('square')
 
@@ -230,7 +231,7 @@ def calc_station_pair_distance(x, y = None):
     distance = np.zeros([nsta, nsta])
     for i in range(nsta):
         for j in range(nsta):
-            distance[i,j] = np.sqrt((coords[i,0] - coords[j,0])**2 + (coords[i,1] - coords[j,1])**2)
+            distance[i,j] = np.sqrt((coords.x[i] - coords.x[j])**2 + (coords.y[i] - coords.y[j])**2)
 
     return distance
 

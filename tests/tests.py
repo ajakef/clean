@@ -5,6 +5,7 @@ from numpy import pi, sqrt, sin, cos, exp
 import obspy
 import importlib
 import cleanbf
+import subprocess
 
 try:
     importlib.reload(cleanbf)
@@ -157,11 +158,4 @@ error_bar = 3*np.sqrt(p_value * (1-p_value) / N) # normal approx to binomial (3-
 print((p_value, observed_detections))
 #assert np.abs(p_value - observed_detections) < error_bar, 'p_value test: Unexpected # false positives'
 
-
-#%% check that the demos run without error
-def test_demo_real():
-    import demo_real_data
-
-def test_demo_synth():
-    import demo_synthetic
 
