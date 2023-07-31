@@ -7,7 +7,14 @@ import importlib
 import cleanbf
 import subprocess
 import os
-data_dir = os.path.join(os.path.dirname(cleanbf.__file__), '../data')
+data_dir = os.path.join(os.path.dirname(cleanbf.__file__), 'data')
+
+def test_data_available():
+    print(data_dir)
+    assert os.path.exists(os.path.join(data_dir, 'aftershock_beginning.mseed'))
+    assert os.path.exists(os.path.join(data_dir, 'noise.mseed'))
+    assert os.path.exists(os.path.join(data_dir, 'XP_PARK_inventory.xml'))
+    assert not os.path.exists(os.path.join(data_dir, 'non-existent-file'))
 
 def test_add_inv_coords():
     eq_stream = obspy.read(os.path.join(data_dir, 'aftershock_beginning.mseed'))

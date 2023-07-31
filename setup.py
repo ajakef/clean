@@ -80,16 +80,16 @@ ENTRY_POINTS = {
 }
 
 setuptools_kwargs = {
-    #'zip_safe': False,
-    #'scripts': [],
-    #'include_package_data': True,
-    'package_data':{'cleanbf':['cleanbf/data/*', 'demos/*']}
+    'zip_safe': False,
+    'scripts': [],
+    'include_package_data': True,
+    #'package_data':{'cleanbf':['cleanbf/data/*', 'demos/*']}
 }
 
 PACKAGES = ['cleanbf']
 
 setup(name=DISTNAME,
-      setup_requires=[],
+      setup_requires=['setuptools>=18.0'],
       version=VERSION,
       packages=PACKAGES,
       install_requires=INSTALL_REQUIRES,
