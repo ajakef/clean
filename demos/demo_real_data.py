@@ -13,7 +13,7 @@ except:
 #%% Load EQ Data
 ## Load an earthquake recording. This includes preliminary background noise,
 ## primary infrasound (simple wavefield), and secondary infrasound (diffuse wavefield)
-data_dir = os.path.join(os.path.dirname(cleanbf.__file__), '../data')
+data_dir = os.path.join(os.path.dirname(cleanbf.__file__), 'data')
 
 eq_stream = obspy.read(os.path.join(data_dir, 'aftershock_beginning.mseed'))
 eq_stream.filter('highpass', freq=2)
