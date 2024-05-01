@@ -53,8 +53,8 @@ def make_steering_vectors_local(stream, geometry_src, freqs, c = 0.340):
     nsta = geometry_array.shape[0]
     nsrc = geometry_src.shape[0]
     ## runtime difference of 10-100x when vectorized: result is shape (nf, nsrc, 1, nsta) including placeholder for compatibility
-    ff, src_xx, pp, array_xx = np.meshgrid(freqs, geometry_src[:,0], [0], geometry_array[:,0], indexing = 'ij')
-    ff, src_yy, pp, array_yy = np.meshgrid(freqs, geometry_src[:,1], [0], geometry_array[:,1], indexing = 'ij')
+    ff, src_xx, pp, array_xx = np.meshgrid(freqs, geometry_src[:,0], [0], geometry_array.x, indexing = 'ij')
+    ff, src_yy, pp, array_yy = np.meshgrid(freqs, geometry_src[:,1], [0], geometry_array.y, indexing = 'ij')
     dd = np.sqrt((array_xx-src_xx)**2 + (array_yy-src_yy)**2)
     steering_vectors = np.exp(-2j * np.pi * ff * dd/c) / dd
     return steering_vectors
@@ -549,25 +549,26 @@ def backproject(lon_grid_range, lat_grid_range, grid_spacing_deg, lon_station, l
     eps = 1e-6
     if power_arrival is None:
         power_arrival = np.ones(len(time_arrival))
-
-    ## Make map matrix
-    lon_nodes = np.arange(lon_grid_range[0], lon_grid_range[1], grid_spacing_deg)
-    lat_nodes = np.arange(lat_grid_range[0], lat_grid_range[1], grid_spacing_deg)
-    #[lon_grid, lat_grid] = np.meshgrid(lon_vector, lat_vector)
+    
+    ## Make map matrix. Map consists of cells, with nodes at the cell corners.
+    #lon_nodes = np.arange(lon_grid_range[0], lon_grid_range[1], grid_spacing_deg)
+    #lat_nodes = np.arange(lat_grid_range[0], lat_grid_range[1], grid_spacing_deg)
 
     ## For each node, calculate max time and min time, and max baz and min baz.
-    x_hat_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
-    y_hat_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
-    t_max_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
-    t_min_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
-    for i, lon in enumerate(lon_nodes):
-        for j, lat in enumerate(lat_nodes):
-            [ac_dist, ac_az, ac_baz] = obspy.geodetics.gps2dist_azimuth(lat1=lat, lon1=lon, lat2=lat_station, lon2=lon_station)
-            [seis_dist, seis_az, seis_baz] = obspy.geodetics.gps2dist_azimuth(lat1=lat, lon1=lon, lat2=lat_eq, lon2=lon_eq)
-            x_hat_nodes[i,j] = np.sin(ac_baz * np.pi/180)
-            y_hat_nodes[i,j] = np.cos(ac_baz * np.pi/180)
-            t_max_nodes[i,j] = ac_dist/ca_min + np.sqrt(seis_dist**2 + z_eq**2)/cs_min
-            t_min_nodes[i,j] = ac_dist/ca_max + np.sqrt(seis_dist**2 + z_eq**2)/cs_max
+    #x_hat_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    #y_hat_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    #t_max_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    #t_min_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    #for i, lon in enumerate(lon_nodes):
+    #    for j, lat in enumerate(lat_nodes):
+    #        [ac_dist, ac_az, ac_baz] = obspy.geodetics.gps2dist_azimuth(lat1=lat, lon1=lon, lat2=lat_station, lon2=lon_station)
+    #        [seis_dist, seis_az, seis_baz] = obspy.geodetics.gps2dist_azimuth(lat1=lat, lon1=lon, lat2=lat_eq, lon2=lon_eq)
+    #        x_hat_nodes[i,j] = np.sin(ac_baz * np.pi/180)
+    #        y_hat_nodes[i,j] = np.cos(ac_baz * np.pi/180)
+    #        t_max_nodes[i,j] = ac_dist/ca_min + np.sqrt(seis_dist**2 + z_eq**2)/cs_min
+    #        t_min_nodes[i,j] = ac_dist/ca_max + np.sqrt(seis_dist**2 + z_eq**2)/cs_max
+    (lon_nodes, lat_nodes, x_hat_nodes, y_hat_nodes, t_max_nodes, t_min_nodes) = calc_map_node_traveltime(lon_grid_range, lat_grid_range, grid_spacing_deg, lon_station, lat_station, lon_eq, lat_eq, z_eq, ca_min, ca_max, cs_min, cs_max)
+    
     ## make cells, with max/min values for boundary nodes
     x_hat_min_cells = np.zeros((len(lon_nodes)-1, len(lat_nodes)-1))
     x_hat_max_cells = np.zeros((len(lon_nodes)-1, len(lat_nodes)-1))
@@ -583,7 +584,7 @@ def backproject(lon_grid_range, lat_grid_range, grid_spacing_deg, lon_station, l
             y_hat_max_cells[i,j] = np.max(y_hat_nodes[i:(i+2), j:(j+2)])
             t_min_cells[i,j] = np.min(t_min_nodes[i:(i+2), j:(j+2)])
             t_max_cells[i,j] = np.min(t_max_nodes[i:(i+2), j:(j+2)])
-    ## For each detection,
+    ## For each detection, assign its power to output cells
     output_cells = 0 * t_max_cells
     bin = np.linspace(-0.5 * az_bin_width, 0.5 * az_bin_width + eps, 10)
     for time, baz, power in zip(time_arrival, baz_arrival, power_arrival):
@@ -596,7 +597,29 @@ def backproject(lon_grid_range, lat_grid_range, grid_spacing_deg, lon_station, l
                                   (x_hat_max >= (x_hat_min_cells-eps)) & (x_hat_min <= (x_hat_max_cells+eps)) &
                                   (y_hat_max >= (y_hat_min_cells-eps)) & (y_hat_min <= (y_hat_max_cells+eps)) )
 
-    return output_cells, lon_nodes, lat_nodes
+    return output_cells, lon_nodes, lat_nodes, t_min_nodes, t_max_nodes
+
+
+#############
+def calc_map_node_traveltime(lon_grid_range, lat_grid_range, grid_spacing_deg, lon_station, lat_station, lon_eq, lat_eq, z_eq, ca_min, ca_max, cs_min, cs_max):
+    ## Make map matrix. Map consists of cells, with nodes at the cell corners.
+    lon_nodes = np.arange(lon_grid_range[0], lon_grid_range[1], grid_spacing_deg)
+    lat_nodes = np.arange(lat_grid_range[0], lat_grid_range[1], grid_spacing_deg)
+
+    ## For each node, calculate max time and min time, and max baz and min baz.
+    x_hat_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    y_hat_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    t_max_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    t_min_nodes = np.zeros((len(lon_nodes), len(lat_nodes)))
+    for i, lon in enumerate(lon_nodes):
+        for j, lat in enumerate(lat_nodes):
+            [ac_dist, ac_az, ac_baz] = obspy.geodetics.gps2dist_azimuth(lat1=lat, lon1=lon, lat2=lat_station, lon2=lon_station)
+            [seis_dist, seis_az, seis_baz] = obspy.geodetics.gps2dist_azimuth(lat1=lat, lon1=lon, lat2=lat_eq, lon2=lon_eq)
+            x_hat_nodes[i,j] = np.sin(ac_baz * np.pi/180)
+            y_hat_nodes[i,j] = np.cos(ac_baz * np.pi/180)
+            t_max_nodes[i,j] = ac_dist/ca_min + np.sqrt(seis_dist**2 + z_eq**2)/cs_min
+            t_min_nodes[i,j] = ac_dist/ca_max + np.sqrt(seis_dist**2 + z_eq**2)/cs_max
+    return (lon_nodes, lat_nodes, x_hat_nodes, y_hat_nodes, t_max_nodes, t_min_nodes)
 
 
 
