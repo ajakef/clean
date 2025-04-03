@@ -50,8 +50,9 @@ def make_synth_stream(Nt = 400, dt = 0.01, x = None, y = None, dx = None, dy = N
     tt = (np.arange(Ntt)-Ntt/3)*dtt # provides padding and higher time res for interp (e.g., 0-1 s becomes -0.5 - 1.5 s)
     stf_list = []
     for i in range(Nwaves):
-        [b,a]=scipy.signal.butter(4, [2*fl[i]*dtt,2*fh[i]*dtt], 'bandpass')
-        signal = scipy.signal.lfilter(b, a, _make_noise(Ntt, prewhiten))
+        sos=scipy.signal.butter(4, [2*fl[i]*dtt,2*fh[i]*dtt], 'bandpass', output = 'sos')
+        unfiltered_signal = _make_noise(Ntt, prewhiten)
+        signal = scipy.signal.sosfilt(sos, unfiltered_signal - np.mean(unfiltered_signal))
         signal *= amp[i]/np.std(signal)
         stf_list.append(scipy.interpolate.interp1d(tt, signal, fill_value='extrapolate', kind='cubic'))
     stream = obspy.Stream()
