@@ -31,7 +31,7 @@ MAINTAINER_EMAIL = 'ajakef@gmail.com'
 URL = 'https://github.com/ajakef/clean'
 
 
-VERSION = '0.2'
+VERSION = '0.3'
 
 ## Dependency notes:
 # pandas: >= 1.3 

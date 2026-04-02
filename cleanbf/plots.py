@@ -40,7 +40,7 @@ wyorm = LinearSegmentedColormap('wyor', {'red': [[0, 1, 1],
 
 
 def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblance = True,
-                        fRange = [0, np.Inf], sxRange = [-4, 4], 
+                        fRange = [0, np.inf], sxRange = [-4, 4], 
                         syRange = [-4, 4], imageAdj = None, backazimuth = True,
                         ax = None):
     """
@@ -120,7 +120,7 @@ def plot_freq_slow_spec(clean_output, plot_comp = 'fx', type = 'clean', semblanc
     #print('Remember plt.show()') # necessary in terminal
 
 def polar_freq_slow_spec(clean_output, plot_comp = 'fh', type = 'clean', 
-                         fRange = [-np.Inf, np.Inf], azRange = [-np.Inf, np.Inf], 
+                         fRange = [-np.inf, np.inf], azRange = [-np.inf, np.inf], 
                          shRange = [0, 4], imageAdj = None, backazimuth = True,
                          ax = None):
     """
