@@ -198,7 +198,7 @@ def calc_freq_slowness_spec(cross_spec, steering_vectors = None, weights = None,
         mask = np.ones(cross_spec.shape[:2])
     return np.abs(np.einsum('k,klmi,ijk,klmj,ij->klm', freq_to_use, weights.conj(), cross_spec, weights, mask)) # n_freq x n_slow x n_slow; absolute power over f, sx,sy
 
-def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, sxList, syList, show_plots, cross_spec_mask):
+def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, sxList, syList, show_plots, cross_spec_mask, method = 'PSF'):
     originalCrossSpec = cross_spec.copy()
     dropped_power = 0 * cross_spec
     nsta = cross_spec.shape[0]
@@ -238,8 +238,17 @@ def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, s
         remainingPower = np.abs(np.einsum('iij->', cross_spec) / np.einsum('iij->', originalCrossSpec))
         if (Pmax > stopCondition) and (remainingPower > 0.001):
             done = False
-            compToRemove = phi * np.einsum('i,ij,ik->jki',P[:,imax,jmax], wB[:,imax,jmax,:],
-                                     wB[:,imax,jmax,:].conj())
+            if method == 'PSF': ## remove a modeled plane wave at the peak slowness
+                compToRemove = phi * np.einsum('i,ij,ik->jki',P[:,imax,jmax], wB[:,imax,jmax,:],
+                                         wB[:,imax,jmax,:].conj())
+            elif method == 'SC': ## remove the part of the cross-spectrum coherent with the peak beam (Sijtsma 2007)
+                ## for a single source C = a^2 u u^H, (Cw)(Cw)^H/(w^H C w) = a^2 u u^H exactly, even if u isn't a plane wave
+                w = wB[:,imax,jmax,:] # freq, station
+                Cw = np.einsum('jki,ik->ij', cross_spec, w) # freq, station
+                wCw = np.real(np.einsum('ij,ij->i', w.conj(), Cw)) # freq; unmasked beam power
+                compToRemove = phi * np.einsum('ij,ik,i->jki', Cw, Cw.conj(), 1/(wCw + eps))
+            else:
+                raise ValueError("method must be 'PSF' or 'SC'")
             for i in np.where(f_inds)[0]:
                 #if any([any(newCrossSpec[i,i,:] < 0) for i in range(nsta)]):
                 #if any(np.diag(cross_spec[:,:,i] - compToRemove[:,:,i]) < 0):
@@ -356,7 +365,7 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
           win_length_sec = 1, freq_bin_width = 1, freq_min = 0, freq_max = 15, separate_freqs = 0,
           rawFT = False, taper = 'Tukey', taper_param = 4, prewhiten = False, 
           show_plots = False, verbose = True, steering_vectors = None, cross_spec = None, freqList = None,
-          cross_spec_mask = None, criterion_function = None):
+          cross_spec_mask = None, criterion_function = None, method = 'PSF'):
     """
     Iteratively deconvolves array response from cross-spectrum, stopping when the F statistic drops
     below a threshold and resulting in a sparse 3-D array (frequency, x-slowness, y-slowness).
@@ -396,6 +405,10 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
     cross_spec_mask: matrix of zeros and ones indicating which station pairs should be considered. 
     By default, all station pairs are used; however, the user might want to only consider station 
     pairs within some maximum distance.
+    method: what to remove from the cross-spectrum each iteration.
+         --'PSF' (default): a modeled plane wave at the peak slowness (classic Clean)
+         --'SC': the part of the cross-spectrum coherent with the peak beam (CLEAN-SC; Sijtsma, 2007).
+           Removes the actual wavefront, even if it deviates from a plane wave.
 
     Returns
     -------
@@ -444,7 +457,7 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
         print('Beginning cleaning loop')
         print('[sxList[imax], syList[jmax], Pmax/stopCondition]')
     cleanSpec = np.zeros(wB.shape[:3])
-    clean_output = clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, sxList, syList, show_plots, cross_spec_mask)
+    clean_output = clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, sxList, syList, show_plots, cross_spec_mask, method = method)
     cleanSpec, cross_spec, remainingSpec, droppedCrossSpec = [clean_output[i] for i in ['cleanSpec', 'cross_spec', 'remainingSpec', 'droppedCrossSpec']]
 
     ## Print the remaining power and original power, and return

@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 import obspy#, scipy
 import sys, os
 import cleanbf
+data_dir = os.path.join(os.path.dirname(cleanbf.__file__), 'data')
 
-st = obspy.read('data/noise.mseed')
+st = obspy.read(os.path.join(data_dir, 'noise.mseed'))
 st.filter('bandpass', freqmin=0.15, freqmax = 1)
-inv = obspy.read_inventory('data/XP_PARK_inventory.xml') # includes coordinates
+inv = obspy.read_inventory(os.path.join(data_dir, 'XP_PARK_inventory.xml')) # includes coordinates
 cleanbf.add_inv_coords(st, inv) # store the coordinates in the stream
 
 ## define slowness grid to search

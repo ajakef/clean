@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import obspy, scipy
 import cleanbf
-import sys
+import sys, os
 #sys.path.append('/home/jake/Work/Aftershocks/lib/clean')
 try:
     import importlib
@@ -14,10 +14,11 @@ except:
 #%%
 ## Load an earthquake recording. This includes preliminary background noise,
 ## primary infrasound (simple wavefield), and secondary infrasound (diffuse wavefield)
+data_dir = os.path.join(os.path.dirname(cleanbf.__file__), 'data')
 
-eq_stream = obspy.read('data/aftershock.mseed')
+eq_stream = obspy.read(os.path.join(data_dir, 'aftershock.mseed'))
 eq_stream.filter('highpass', freq=2)
-inv = obspy.read_inventory('data/XP_PARK_inventory.xml') # includes coordinates
+inv = obspy.read_inventory(os.path.join(data_dir, 'XP_PARK_inventory.xml')) # includes coordinates
 cleanbf.add_inv_coords(eq_stream, inv) # store the coordinates in the stream
 
 ## define significant times in the data
@@ -100,9 +101,9 @@ cleanbf.polar_freq_slow_spec(result, 'fa')
 plt.tight_layout()
 
 #%% microbarom detection
-st = obspy.read('data/noise.mseed')
+st = obspy.read(os.path.join(data_dir, 'noise.mseed'))
 st.filter('bandpass', freqmin=0.15, freqmax = 1)
-inv = obspy.read_inventory('data/XP_PARK_inventory.xml') # includes coordinates
+inv = obspy.read_inventory(os.path.join(data_dir, 'XP_PARK_inventory.xml')) # includes coordinates
 cleanbf.add_inv_coords(st, inv) # store the coordinates in the stream
 
 ## define slowness grid to search

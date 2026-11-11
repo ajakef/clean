@@ -37,3 +37,19 @@ def test_calc_station_pair_distance():
 
     cleanbf.plot_distances(eq_stream, 0) # plot the array (or sub-array) geometry
 
+
+def test_nnls_beamform_plane_wave():
+    np.random.seed(0)
+    s_list = np.arange(-4, 4, 0.25)
+    st = cleanbf.make_synth_stream(Nt = 800, Nx = 4, Ny = 4, sx = [1], sy = [-2], amp = [1], fc = [6])
+    for smoothing in [0, 0.01]:
+        result = cleanbf.nnls_beamform(st, sxList = s_list, syList = s_list, smoothing = smoothing, verbose = False)
+        spec = result['cleanSpec'].sum(0)
+        sx, sy = np.meshgrid(s_list, s_list, indexing = 'ij')
+        near_true = (np.abs(sx - 1) <= 0.25) & (np.abs(sy + 2) <= 0.25) # within one grid cell of the true slowness
+        assert spec[near_true].sum() / np.einsum('iik->', result['originalCrossSpec']).real > 0.9
+        assert cleanbf.check_output_power(result)
+    ## pure noise: little or no power should be assigned to waves
+    st = cleanbf.make_synth_stream(Nt = 800, Nx = 4, Ny = 4, sx = [0], sy = [0], amp = [0], fc = [6], uncorrelatedNoiseAmp = 2)
+    result = cleanbf.nnls_beamform(st, sxList = s_list, syList = s_list, verbose = False)
+    assert result['cleanSpec'].sum() / np.einsum('iik->', result['originalCrossSpec']).real < 0.1

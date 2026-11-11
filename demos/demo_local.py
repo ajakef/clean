@@ -84,8 +84,8 @@ plt.plot(src_xyz[src_amp != 1,0], src_xyz[src_amp != 1,1], 'k*')
 plt.plot(src_xyz[src_amp == 1,0], src_xyz[src_amp == 1,1], 'r*')
 sta_xyz = np.array([[d for d in tr.stats.coordinates.values()] for tr in stream])
 plt.plot(sta_xyz[:,0], sta_xyz[:,1], 'bv')
-stream_geometry = cleanbf.get_geometry(stream) ## check to make sure the coordinates are correct
-plt.plot(stream_geometry[:,0], stream_geometry[:,1], 'gv')
+stream_geometry = cleanbf.get_coordinates(stream) ## check to make sure the coordinates are correct
+plt.plot(stream_geometry.x, stream_geometry.y, 'gv')
 plt.axis('equal')
 
 #%%
