@@ -4,7 +4,7 @@ import scipy.linalg
 
 EXACT_MAX = 6500 # largest number of slowness cells solved exactly (needs ~32*n^2 bytes); larger grids use a much slower iterative solver
 
-from cleanbf.core import calc_cross_spectrum, make_steering_vectors, _process_inputs
+from cleanbf.core import calc_cross_spectrum, make_steering_vectors, _process_inputs, calc_freq_slowness_spec
 
 def nnls_beamform(stream, x = None, y = None, sxList = None, syList = None, win_length_sec = 1,
                   freq_bin_width = 1, freq_min = 0, freq_max = 15, rawFT = False, taper = 'Tukey',
@@ -121,8 +121,8 @@ def nnls_beamform(stream, x = None, y = None, sxList = None, syList = None, win_
     remainingCrossSpec = cross_spec - modelCrossSpec
     noiseSpec = np.einsum('iik->ki', remainingCrossSpec).real
     weights = steering_vectors / np.linalg.norm(steering_vectors, axis = 3, keepdims = True) # same as calc_weights
-    originalSpec = np.abs(np.einsum('klmi,ijk,klmj->klm', weights.conj(), cross_spec, weights))
-    remainingSpec = np.abs(np.einsum('klmi,ijk,klmj->klm', weights.conj(), remainingCrossSpec, weights))
+    originalSpec = calc_freq_slowness_spec(cross_spec, weights = weights)
+    remainingSpec = calc_freq_slowness_spec(remainingCrossSpec, weights = weights)
     if verbose:
         total = np.einsum('iik->', cross_spec).real
         print('Fitted wave power fraction: %.3f; unexplained station power fraction: %.3f' % (cleanSpec.sum()/total, noiseSpec.sum()/total))

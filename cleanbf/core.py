@@ -228,26 +228,58 @@ def calc_weights(steering_vectors):
     ## now, sum of squares over stations is 1 for every freq-sx-sy combo
     return weights
  
+def _beam_power(cross_spec, W, mask = None):
+    """
+    Complex beam power w^H (C * mask) w for every frequency and source (abs not taken).
+    cross_spec: [station, station, freq]; W: weights with the two slowness axes combined, [freq, source, station];
+    mask: optional [station, station] matrix multiplied into the cross-spectrum. Returns [freq, source].
+    Uses one matrix product per frequency; a multi-array einsum is much slower because numpy runs it as a plain
+    nested loop.
+    """
+    nf, nsrc, nsta = W.shape
+    out = np.empty((nf, nsrc), dtype = np.result_type(W, cross_spec))
+    for k in range(nf):
+        Ck = cross_spec[:,:,k] if mask is None else cross_spec[:,:,k] * mask
+        Y = W[k] @ Ck.conj() # [source, station]: complex conjugate of w^H C, without copying W to conjugate it
+        np.conjugate(Y, out = Y)
+        out[k] = np.einsum('sj,sj->s', Y, W[k])
+    return out
+
 def calc_freq_slowness_spec(cross_spec, steering_vectors = None, weights = None, freq_to_use = None, mask = None):
     if weights is None:
         weights = calc_weights(steering_vectors)
-    if freq_to_use is None:
-        freq_to_use = np.ones(cross_spec.shape[2])
-    if mask is None:
-        mask = np.ones(cross_spec.shape[:2])
-    return np.abs(np.einsum('k,klmi,ijk,klmj,ij->klm', freq_to_use, weights.conj(), cross_spec, weights, mask)) # n_freq x n_slow x n_slow; absolute power over f, sx,sy
+    nf, nsx, nsy, nsta = weights.shape
+    P = np.abs(_beam_power(cross_spec, weights.reshape(nf, nsx * nsy, nsta), mask))
+    if freq_to_use is not None:
+        P *= np.abs(np.asarray(freq_to_use))[:, None] # same as weighting inside the abs
+    return P.reshape(nf, nsx, nsy) # n_freq x n_slow x n_slow; absolute power over f, sx,sy
 
-def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, sxList, syList, show_plots, cross_spec_mask, method = 'PSF'):
+def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, sxList, syList, show_plots, cross_spec_mask, method = 'PSF',
+               incremental = True):
+    """
+    The cleaning loop used by clean(); see clean() for the parameters. cross_spec and cleanSpec are changed in place.
+
+    incremental: if True and cross_spec_mask is all ones, the beam power is calculated in full only once. After that,
+         each removed component is a vector times its own conjugate at each frequency, so the drop in every beam's
+         power is found with one matrix-vector product per frequency instead of a full recalculation. The result is
+         the same to rounding error, and much faster. If False (or with any other mask), the beam power is
+         recalculated in full every iteration.
+    """
     originalCrossSpec = cross_spec.copy()
     dropped_power = 0 * cross_spec
     nsta = cross_spec.shape[0]
+    nf, nsx, nsy = wB.shape[:3]
+    W = wB.reshape(nf, nsx * nsy, nsta) # freq, source, station (a view, not a copy)
+    incremental = incremental and np.all(cross_spec_mask == 1)
     done = False
     positive_freqs = np.ones(cross_spec.shape[2]) # these get set to zero when a frequency's power starts to get negative
     count = 0
     while not done:
         count += 1
         ## calculate frequency-slowness spectrum
-        P = calc_freq_slowness_spec(cross_spec, weights = wB, freq_to_use = positive_freqs, mask = cross_spec_mask)
+        if (count == 1) or not incremental:
+            beam_power = _beam_power(cross_spec, W, None if incremental else cross_spec_mask) # complex; freq, source
+        P = (np.abs(beam_power) * positive_freqs[:, None]).reshape(nf, nsx, nsy)
         if separate_freqs == 1:  ## use this code to pick best slowness AND best frequency
             f_inds,imax,jmax= np.where(P == P.max()); f_inds = f_inds[:1]; imax=imax[0]; jmax=jmax[0]; #kmax=kmax[0]
             f_inds = f_inds == np.arange(len(positive_freqs)) ## convert f_inds to bool
@@ -277,15 +309,18 @@ def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, s
         remainingPower = np.abs(np.einsum('iij->', cross_spec) / np.einsum('iij->', originalCrossSpec))
         if (Pmax > stopCondition) and (remainingPower > 0.001):
             done = False
+            ## compToRemove is amp * u u^H at each frequency (amp: freq; u: freq, station)
             if method == 'PSF': ## remove a modeled plane wave at the peak slowness
                 compToRemove = phi * np.einsum('i,ij,ik->jki',P[:,imax,jmax], wB[:,imax,jmax,:],
                                          wB[:,imax,jmax,:].conj())
+                amp, u = phi * P[:,imax,jmax], wB[:,imax,jmax,:]
             elif method == 'SC': ## remove the part of the cross-spectrum coherent with the peak beam (Sijtsma 2007)
                 ## for a single source C = a^2 u u^H, (Cw)(Cw)^H/(w^H C w) = a^2 u u^H exactly, even if u isn't a plane wave
                 w = wB[:,imax,jmax,:] # freq, station
                 Cw = np.einsum('jki,ik->ij', cross_spec, w) # freq, station
                 wCw = np.real(np.einsum('ij,ij->i', w.conj(), Cw)) # freq; unmasked beam power
                 compToRemove = phi * np.einsum('ij,ik,i->jki', Cw, Cw.conj(), 1/(wCw + eps))
+                amp, u = phi / (wCw + eps), Cw
             else:
                 raise ValueError("method must be 'PSF' or 'SC'")
             ## Drop frequencies whose station powers would go (nearly) negative after removing this component.
@@ -311,6 +346,10 @@ def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, s
                 plot_slowness_spectrum(cross_spec, compToRemove, cleanSpec, originalCrossSpec, wB, sxList, syList, count)
                 
             cross_spec[:,:,f_inds] -= np.einsum('ij,ijk,k->ijk', cross_spec_mask, compToRemove, positive_freqs)[:,:,f_inds]
+            if incremental: ## each beam's power drops by w^H (amp u u^H) w = amp |w^H u|^2, at the frequencies just changed
+                for k in np.where(f_inds & (positive_freqs == 1))[0]:
+                    wu = np.einsum('si,i->s', W[k], u[k].conj()) # complex conjugate of w^H u, for every source (einsum is faster than @ here)
+                    beam_power[k] -= amp[k] * (wu.real**2 + wu.imag**2)
             #cross_spec = DropNegatives(cross_spec) ## shouldn't run anymore but sends an alert if it does
             if verbose: print('sx %.3f, sy %.3f, p/stop %.3f, remaining %.3f' % (sxList[imax], syList[jmax], Pmax/stopCondition, remainingPower))
         else:
@@ -506,7 +545,7 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
         wB = calc_weights(steering_vectors)
     ## save the spectra before cleaning
     originalCrossSpec = cross_spec.copy()
-    originalSpec = np.abs(np.einsum('klmi,ijk,klmj->klm', wB.conj(), cross_spec, wB)) # n_freq x n_slow x n_slow; absolute power over f, sx,sy
+    originalSpec = calc_freq_slowness_spec(cross_spec, weights = wB) # n_freq x n_slow x n_slow; absolute power over f, sx,sy
     ## Run the cleaning loop
     if verbose:
         print('Beginning cleaning loop')
