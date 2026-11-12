@@ -53,3 +53,26 @@ def test_nnls_beamform_plane_wave():
     st = cleanbf.make_synth_stream(Nt = 800, Nx = 4, Ny = 4, sx = [0], sy = [0], amp = [0], fc = [6], uncorrelatedNoiseAmp = 2)
     result = cleanbf.nnls_beamform(st, sxList = s_list, syList = s_list, verbose = False)
     assert result['cleanSpec'].sum() / np.einsum('iik->', result['originalCrossSpec']).real < 0.1
+
+
+def test_cross_spectrum_batched_matches_loop():
+    ## the default (batched) path must agree with the per-window path used when a criterion_function is given
+    st = cleanbf.make_synth_stream(Nt = 1200, Nx = 3, Ny = 2, sx = [1], sy = [-2], amp = [1], fc = [6], uncorrelatedNoiseAmp = 0.3)
+    all_ok = lambda s: np.ones((len(s), len(s)))
+    for kw in [{}, {'prewhiten':True}, {'raw':True}, {'freq_bin_width':3}]:
+        a = cleanbf.calc_cross_spectrum(st, **kw)
+        b = cleanbf.calc_cross_spectrum(st, criterion_function = all_ok, **kw)
+        for x, y in zip(a[:3], b[:3]):
+            assert np.allclose(x, y, rtol = 1e-10, atol = 1e-14 * np.abs(y).max())
+        assert a[3:] == b[3:]
+
+
+def test_clean_loop_reuses_weights():
+    np.random.seed(2)
+    s_list = np.arange(-3, 3, 0.5)
+    st = cleanbf.make_synth_stream(Nt = 1000, Nx = 3, Ny = 2, sx = [1], sy = [-2], amp = [1], fc = [6], uncorrelatedNoiseAmp = 0.3)
+    out = cleanbf.core.clean_loop(st, loop_step = 3, loop_width = 3, sxList = s_list, syList = s_list, verbose = False)
+    single = cleanbf.clean(st.slice(st[0].stats.starttime + 3, st[0].stats.starttime + 6), sxList = s_list, syList = s_list, verbose = False)
+    assert np.allclose(out['clean'][1], single['cleanSpec'])
+    assert len(out['all_data']) == len(out['t'])
+    assert np.allclose(out['original_sx'], 1) and np.allclose(out['original_sy'], -2)

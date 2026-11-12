@@ -85,6 +85,40 @@ def calc_fourier_window(stream, offset=0, taper = None, taper_param = 4, raw=Fal
         ft /= np.abs(ft) + eps # apply a tiny waterlevel to avoid divide-by-zero
     return ft, freqList
 
+def _calc_cross_spectrum_batched(stream, win_starts, win_length_samp, raw, prewhiten, batch = 64):
+    """
+    Cross-spectrum averaged over equally-weighted windows (default Tukey taper, no criterion function),
+    with each batch of windows Fourier transformed in one call. Same result as looping over
+    calc_fourier_window(), without the per-window Python overhead and stream copies.
+    Returns cross_spec (station, station, freq), FT (mean |spectrum| over windows; station, freq), freqs.
+    """
+    delta = stream[0].stats.delta
+    nsamp = win_length_samp
+    nfft = next_pow_2(nsamp)
+    nlow, nhigh = 1, nfft // 2 - 1
+    nf = nhigh - nlow + 1
+    freqs = np.arange(nlow, nlow + nf) / (nfft * delta)
+    taper = cosine_taper(nsamp, p = 0.22)
+    data = np.array([tr.data for tr in stream], dtype = float) # station, time
+    nsta = data.shape[0]
+    cross_spec = np.zeros((nsta, nsta, nf), dtype = np.complex128)
+    FT = np.zeros((nsta, nf))
+    for b in range(0, len(win_starts), batch):
+        starts = win_starts[b:(b + batch)]
+        seg = np.stack([data[:, a:(a + nsamp)] for a in starts]) # window, station, time
+        if not raw:
+            seg = scipy.signal.detrend(seg, axis = -1) * taper
+        ft = np.fft.rfft(seg, nfft, axis = -1)[:, :, nlow:(nlow + nf)] # window, station, freq
+        ft *= np.sqrt(2 * delta / nsamp) # one-sided spectrum with physical amplitude units
+        if prewhiten: # per window, as in calc_fourier_window
+            for w in range(ft.shape[0]):
+                eps_w = np.min(np.abs(ft[w])[ft[w] != 0])
+                ft[w] /= np.abs(ft[w]) + eps_w
+        cross_spec += np.einsum('wik,wjk->ijk', ft, ft.conj())
+        FT += np.abs(ft).sum(axis = 0)
+    n = len(win_starts)
+    return cross_spec / n, FT / n, freqs
+
 def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False, win_length_sec = 1, 
                         freq_bin_width = 1, prewhiten = False, plot = False, criterion_function = None):
     """
@@ -111,7 +145,8 @@ def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False
     dfn: numerator degrees of freedom 
     dfd: denominator degrees of freedom
     """
-    if criterion_function is None:
+    no_criterion = criterion_function is None
+    if no_criterion:
         def criterion_function(st): return np.ones([len(st), len(st)])
     cross_spec = 0
     FT = 0 
@@ -144,20 +179,24 @@ def calc_cross_spectrum(stream, offset=0, taper=None, taper_param = 4, raw=False
         num_windows = 1 + int(np.ceil((data_length_samp - win_length_samp) / (win_length_samp * (1 - overlap))))
         if num_windows < 1:
             raise Exception('No analysis windows for calculating cross spectrum...empty stream?')
-        criterion = np.zeros([len(stream), len(stream)])
-        criterion_count = np.zeros([len(stream), len(stream)])
-        
-        for i in range(num_windows):
-            win_start = int(np.round(i * (data_length_samp - win_length_samp) / (num_windows-1 + eps)))
-            tmpStream = stream.copy()
-            for tr in tmpStream:
-                tr.data = tr.data[win_start:(win_start + win_length_samp)]
-            criterion = criterion_function(tmpStream)
-            criterion_count += criterion
-            tmpFT, freqs = calc_fourier_window(tmpStream, offset, taper, taper_param, raw, prewhiten)
-            cross_spec += np.einsum('ik,jk,ij->ijk', tmpFT, tmpFT.conj(), criterion) # identical to _r from obspy, but reordered indices. i: station, j: station, k: freq
-            FT += np.abs(tmpFT) / num_windows
-        cross_spec = np.einsum('ijk,ij->ijk', cross_spec, 1/criterion_count)
+        win_starts = [int(np.round(i * (data_length_samp - win_length_samp) / (num_windows-1 + eps))) for i in range(num_windows)]
+        use_batched = no_criterion and (offset == 0) and ((taper is None) or (isinstance(taper, str) and taper.lower() == 'tukey'))
+        if use_batched:
+            ## Fast path: no per-window criterion, so every window counts equally and all windows can be Fourier
+            ## transformed in batches instead of one at a time. Gives the same result as the loop below.
+            cross_spec, FT, freqs = _calc_cross_spectrum_batched(stream, win_starts, win_length_samp, raw, prewhiten)
+        else:
+            criterion_count = np.zeros([len(stream), len(stream)])
+            for win_start in win_starts:
+                ## Window the data without copying the whole stream each time (criterion_function may read stats)
+                tmpStream = obspy.Stream([obspy.Trace(data = tr.data[win_start:(win_start + win_length_samp)], header = tr.stats)
+                                          for tr in stream])
+                criterion = criterion_function(tmpStream)
+                criterion_count += criterion
+                tmpFT, freqs = calc_fourier_window(tmpStream, offset, taper, taper_param, raw, prewhiten)
+                cross_spec += np.einsum('ik,jk,ij->ijk', tmpFT, tmpFT.conj(), criterion) # identical to _r from obspy, but reordered indices. i: station, j: station, k: freq
+                FT += np.abs(tmpFT) / num_windows
+            cross_spec = np.einsum('ijk,ij->ijk', cross_spec, 1/criterion_count)
     ## bin smoothing
     n_bins = len(freqs) // freq_bin_width
     cross_spec_binned = np.zeros((len(stream), len(stream), n_bins), dtype = np.complex128)
@@ -249,15 +288,17 @@ def clean_step(cleanSpec, cross_spec, wB, phi, stopF, separate_freqs, verbose, s
                 compToRemove = phi * np.einsum('ij,ik,i->jki', Cw, Cw.conj(), 1/(wCw + eps))
             else:
                 raise ValueError("method must be 'PSF' or 'SC'")
-            for i in np.where(f_inds)[0]:
-                #if any([any(newCrossSpec[i,i,:] < 0) for i in range(nsta)]):
-                #if any(np.diag(cross_spec[:,:,i] - compToRemove[:,:,i]) < 0):
-                diags = np.diag(cross_spec[:,:,i] - compToRemove[:,:,i])
-                if np.mean(diags) < np.std(diags):# allow some negativity, but not much
-                    if verbose: print('Dropping freq index %d due to negative power' %i) 
-                    positive_freqs[i] = 0 
-                    dropped_power[:,:,i] = cross_spec[:,:,i]
-                    
+            ## Drop frequencies whose station powers would go (nearly) negative after removing this component.
+            ## (all frequencies tested at once; each is judged by its own station powers only)
+            f_idx = np.where(f_inds)[0]
+            diags = (np.einsum('iik->ik', cross_spec[:,:,f_idx]) - np.einsum('iik->ik', compToRemove[:,:,f_idx])) # station, freq
+            negative = np.real(np.mean(diags, axis = 0)) < np.std(diags, axis = 0) # allow some negativity, but not much
+            for i in f_idx[negative]:
+                if verbose: print('Dropping freq index %d due to negative power' %i)
+            drop = f_idx[negative]
+            positive_freqs[drop] = 0
+            dropped_power[:,:,drop] = cross_spec[:,:,drop]
+
             # this section causes problems with separate_freqs = 1...comment for now                        
             #if np.sum(compToRemove[:,:,f_inds & (positive_freqs == 1)]) == 0:
             #    breakpoint()
@@ -317,23 +358,32 @@ def plot_slowness_spectrum(cross_spec, compToRemove, cleanSpec, originalCrossSpe
 def clean_loop(stream, loop_step = 1, loop_width=2, x = None, y = None, sxList = None, syList = None, phi = 0.1, p_value = 0.01, 
           win_length_sec = 1, freq_bin_width = 1, freq_min = 0, freq_max = 15, separate_freqs = 0,
           rawFT = False, taper = 'Tukey', taper_param = 4, prewhiten = False,
-          show_plots = False, verbose = True):
+          show_plots = False, verbose = True, method = 'PSF'):
+    """
+    Runs clean() on successive time windows of a stream (each loop_width seconds long, starting every
+    loop_step seconds). Steering vectors and weights are calculated once, for the first window, and
+    reused for the rest. Other parameters are described in clean().
+
+    Returns a dict with window times, original and clean spectra, and the original peak slowness,
+    azimuth, and power of each window. 'all_data' is a list of the full clean() output for each window.
+    """
     t1 = loop_start = stream[0].stats.starttime
     loop_end = stream[0].stats.endtime
     nt = int(1 + (loop_end - loop_start - loop_width) // loop_step)
-    z = np.zeros(nt)
-
-    dirty_output = {'t':z, 'sx':z, 'sy':z, 'power':z}
+    weights = None # calculated by the first window, then reused
     
     for i in range(nt):
         st = stream.slice(t1, t1 + loop_width)
         halftime = t1 + loop_width/2 - loop_start
-        print('%f of %f' % (halftime, loop_end - loop_start))
-        result = clean(st, verbose = verbose, phi = phi, separate_freqs = separate_freqs, win_length_sec = win_length_sec,
-                                  freq_bin_width = freq_bin_width, freq_min = freq_min, freq_max = freq_max, 
-                                  sxList = sxList, syList = syList, prewhiten = False)
-        if t1 == loop_start: # allocate the output variables
-            freq = result['freq']
+        if verbose: print('%f of %f' % (halftime, loop_end - loop_start))
+        result = clean(st, x = x, y = y, verbose = verbose, phi = phi, p_value = p_value, separate_freqs = separate_freqs, 
+                       win_length_sec = win_length_sec, freq_bin_width = freq_bin_width, freq_min = freq_min, 
+                       freq_max = freq_max, sxList = sxList, syList = syList, rawFT = rawFT, taper = taper, 
+                       taper_param = taper_param, prewhiten = prewhiten, show_plots = show_plots, method = method,
+                       weights = weights)
+        weights = result['weights']
+        if i == 0: # allocate the output variables
+            freq, sxList, syList = result['freq'], result['sx'], result['sy']
             output = {'t':np.zeros(nt), 'sx':sxList, 'sy':syList, 'f':freq, 
                       'original_power':np.zeros(nt), 'original_semblance':np.zeros(nt),
                       'original_sx':np.zeros(nt), 'original_sy':np.zeros(nt), 
@@ -342,14 +392,14 @@ def clean_loop(stream, loop_step = 1, loop_width=2, x = None, y = None, sxList =
                       'all_data':[]}
         ## populate the output variables
         output['t'][i] = halftime
-        output['all_data'] = result
+        output['all_data'].append(result)
         output['clean'][i,:,:,:] = result['cleanSpec']
         output['original'][i,:,:] = np.einsum('ijk->jk',result['originalSpec'])
-        j_sx, k_sy = np.where(output['original'][i,:,:] == output['original'][i,:,:].max())
+        j_sx, k_sy = np.unravel_index(np.argmax(output['original'][i,:,:]), output['original'][i,:,:].shape)
         output['original_power'][i] = output['original'][i,j_sx,k_sy]
         output['original_semblance'][i] = calc_semblance(result).max()
         output['original_sx'][i] = sxList[j_sx]
-        output['original_sy'][i] = sxList[k_sy]
+        output['original_sy'][i] = syList[k_sy]
         t1 += loop_step
         
  
@@ -365,7 +415,7 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
           win_length_sec = 1, freq_bin_width = 1, freq_min = 0, freq_max = 15, separate_freqs = 0,
           rawFT = False, taper = 'Tukey', taper_param = 4, prewhiten = False, 
           show_plots = False, verbose = True, steering_vectors = None, cross_spec = None, freqList = None,
-          cross_spec_mask = None, criterion_function = None, method = 'PSF'):
+          cross_spec_mask = None, criterion_function = None, method = 'PSF', weights = None):
     """
     Iteratively deconvolves array response from cross-spectrum, stopping when the F statistic drops
     below a threshold and resulting in a sparse 3-D array (frequency, x-slowness, y-slowness).
@@ -401,6 +451,9 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
     show_plots: if True, show a slowness spectrum plot each iteration
     verbose: if True, give verbose output
     steering_vectors: if not None, has dimensions [f,nx,ny,nsta]
+    weights: normalized steering vectors (the 'weights' entry of a previous result, same dimensions). If
+         given, steering_vectors are not needed and weights are not recalculated, which saves time when
+         cleaning many windows with the same geometry, frequencies, and slownesses (see clean_loop).
     cross_spec: if the cross spectrum has already been calculated, it can be provided to save time.
     cross_spec_mask: matrix of zeros and ones indicating which station pairs should be considered. 
     By default, all station pairs are used; however, the user might want to only consider station 
@@ -445,10 +498,12 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
 
     ## calculate the steering vectors and weights
     if verbose: print('Calculating steering vectors and weights')
-    if steering_vectors is None:
-        steering_vectors = make_steering_vectors(stream, freqList, sxList, syList)
-
-    wB = calc_weights(steering_vectors)
+    if weights is not None:
+        wB = weights
+    else:
+        if steering_vectors is None:
+            steering_vectors = make_steering_vectors(stream, freqList, sxList, syList)
+        wB = calc_weights(steering_vectors)
     ## save the spectra before cleaning
     originalCrossSpec = cross_spec.copy()
     originalSpec = np.abs(np.einsum('klmi,ijk,klmj->klm', wB.conj(), cross_spec, wB)) # n_freq x n_slow x n_slow; absolute power over f, sx,sy
@@ -463,7 +518,7 @@ def clean(stream, x = None, y = None, sxList = None, syList = None, phi = 0.1, p
     ## Print the remaining power and original power, and return
     print('Remaining power fraction: %.3f' % np.abs(np.einsum('iij->', cross_spec) / np.einsum('iij->', originalCrossSpec)))
     return {'cleanSpec':cleanSpec, 'originalSpec':originalSpec, 'remainingSpec':remainingSpec, 'remainingCrossSpec':cross_spec, 
-            'originalCrossSpec':originalCrossSpec, 'droppedCrossSpec':droppedCrossSpec, 'sx':sxList, 'sy':syList, 'freq':freqList}
+            'originalCrossSpec':originalCrossSpec, 'droppedCrossSpec':droppedCrossSpec, 'sx':sxList, 'sy':syList, 'freq':freqList, 'weights':wB}
 
 #####################
 def _process_inputs(stream, x = None, y = None, sxList = None, syList = None):
